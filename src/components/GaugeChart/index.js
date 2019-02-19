@@ -1,5 +1,6 @@
 import React from "react";
 import * as d3 from 'd3';
+import PropTypes from 'prop-types';
 
 /*
 GaugeChart creates a gauge chart using D3
@@ -11,9 +12,15 @@ The svg element surrounding the gauge will always be square
 TODO: Lägg till info om 'data' i docs
 */
 
+//Constants
+const startAngle = -Math.PI/2;  //Negative x-axis
+const endAngle = Math.PI/2;     //Positive x-axis
+const arc = d3.arc();
+const pie = d3.pie();
+
 
 class GaugeChart extends React.Component {
-  //TODO: Change options to props    
+  //TODO: Change props to props    
   constructor() {
     //Class variables
     var svg,
@@ -25,21 +32,17 @@ class GaugeChart extends React.Component {
         needle,
         data,
         outerRadius,
-        arc = d3.arc(),
-        pie = d3.pie(),
-        startAngle = -Math.PI/2,  //Negative x-axis
-        endAngle = Math.PI/2,     //Positive x-axis
         margin = {};  // = {top: 20, right: 50, bottom: 50, left: 50},
 
     //Setup the optional parameters
     //Need to do the 'typeof' check if the parameter is allowed to be 0
-    var marginInPercent = (typeof options.margin === 'undefined') ? 0.05 : options.margin,
-        cornerRadius = (typeof options.cornerRadius === 'undefined') ? 6 : options.cornerRadius,
-        nrOfLevels = options.nrOfLevels || 3,
-        percent = options.data || 0.4,
-        arcPadding = options.arcPadding || 0.05,        //The padding between arcs, in rad
-        arcWidth = options.arcWidth || 0.2,           //The width of the arc given in percent of the radius
-        colors = options.colors || ["#00FF00", "#FF0000"];  //Default defined colors
+    var marginInPercent = (typeof props.margin === 'undefined') ? 0.05 : props.margin,
+        cornerRadius = (typeof props.cornerRadius === 'undefined') ? 6 : props.cornerRadius,
+        nrOfLevels = props.nrOfLevels || 3,
+        percent = props.data || 0.4,
+        arcPadding = props.arcPadding || 0.05,        //The padding between arcs, in rad
+        arcWidth = props.arcWidth || 0.2,           //The width of the arc given in percent of the radius
+        colors = props.colors || ["#00FF00", "#FF0000"];  //Default defined colors
   
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
@@ -245,10 +248,29 @@ class GaugeChart extends React.Component {
         .attr("class", "percent-text");
   }
 
-
   render() {
 
   }
 }
 
 export default GaugeChart;
+
+GaugeChart.defaultProps = {
+  marginInPercent: 0.05,
+  cornerRadius: 6,
+  nrOfLevels: 3,
+  percent: 0.4,
+  arcPadding: 0.05,
+  arcWidth: 0.2,
+  colors: ["#00FF00", "#FF0000"]
+}
+
+GaugeChart.PropTypes = {
+  marginInPercent: PropTypes.number,
+  cornerRadius: PropTypes.number,
+  nrOfLevels: PropTypes.number,
+  percent: PropTypes.number,
+  arcPadding: PropTypes.number,
+  arcWidth: PropTypes.number,
+  colors: PropTypes.array
+}
