@@ -15,129 +15,135 @@ TODO: Lägg till info om 'data' i docs
 //Constants
 const startAngle = -Math.PI/2;  //Negative x-axis
 const endAngle = Math.PI/2;     //Positive x-axis
-const arc = d3.arc();
-const pie = d3.pie();
-
+const containerID = "gauge-container";
 
 class GaugeChart extends React.Component {
   //TODO: Change props to props    
-  constructor() {
+  constructor(props) {
+    super(props);
+    const { nrOfLevels, colors } = this.props;
     //Class variables
-    var svg,
-        container = d3.select(containerID),
-        g,
-        width,
-        height,
-        doughnut,
-        needle,
-        data,
-        outerRadius,
-        margin = {};  // = {top: 20, right: 50, bottom: 50, left: 50},
-
-    //Setup the optional parameters
-    //Need to do the 'typeof' check if the parameter is allowed to be 0
-    var marginInPercent = (typeof props.margin === 'undefined') ? 0.05 : props.margin,
-        cornerRadius = (typeof props.cornerRadius === 'undefined') ? 6 : props.cornerRadius,
-        nrOfLevels = props.nrOfLevels || 3,
-        percent = props.data || 0.4,
-        arcPadding = props.arcPadding || 0.05,        //The padding between arcs, in rad
-        arcWidth = props.arcWidth || 0.2,           //The width of the arc given in percent of the radius
-        colors = props.colors || ["#00FF00", "#FF0000"];  //Default defined colors
-  
+    this.svg = {};
+    this.g = {};
+    this.width = {};
+    this.height = {};
+    this.doughnut = {};
+    this.needle = {};
+    this.data = {};
+    this.outerRadius = {};
+    this.margin = {};  // = {top: 20, right: 50, bottom: 50, left: 50},
+    this.arc = d3.arc();
+    this.pie = d3.pie();
+    
+    this.state = {
+      width: 0,
+      height: 0
+    }
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
     if(nrOfLevels === colors.length){
-      var colorArray = colors;
+      this.colorArray = colors;
     }
     else{
-      var colorArray = getColors();
+      this.colorArray = this.getColors();
     }
     //The data that is used to create the arc
     //The value is 1 for all objects because the arcs should be of same size
-    var arcData = [];
+    this.arcData = [];
     for(var i = 0; i < nrOfLevels; i++){
       var arcDatum = {
         value: 1,
-        color: colorArray[i]
+        color: this.colorArray[i]
       }
-      arcData.push(arcDatum);
+      this.arcData.push(arcDatum);
     }
-    //Get data and initialize chart
-    //This data should be used to rotate the needle
-    d3.json("../data/stock-data.json", init);
   }
 
-  init = (json) => {
-    data = json;
-    svg = container.append("svg");
-    g = svg.append("g")   //Used for margins
-    doughnut = g.append("g")
+  componentDidMount() {
+    this.container = d3.select(`#${containerID}`);
+    //Initialize chart
+    this.initChart();
+  }
+
+  componentDidUpdate() {
+    //Initialize chart
+    //TODO: Maybe not call this here?
+    this.initChart();
+  }
+
+  initChart = () => {
+    this.svg = this.container.append("svg");
+    this.g = this.svg.append("g")   //Used for margins
+    this.doughnut = this.g.append("g")
       .attr("class", "doughnut");
-    //Set up the pie generator
+    
+      //Set up the pie generator
     //Each arc should be of equal length (or should they?)
-    pie.value(function(d) { return d.value; })
+    this.pie.value(function(d) { return d.value; })
       //.padAngle(arcPadding)
       .startAngle(startAngle)
       .endAngle(endAngle)
       .sort(null);
     //Add the needle element
-    needle = g.append("g")
+    this.needle = this.g.append("g")
       .attr("class", "needle");
     //Set up resize event listener to re-render the chart everytime the window is resized
-    window.addEventListener('resize', function(){
+    window.addEventListener('resize', () => {
       var resize = true;
-      render(resize);
+      this.renderChart(resize);
     });
-    render();
+    this.renderChart();
 
   }
 
   //Renders the chart, should be called every time the window is resized
-  render = (resize) => {
-    updateDimensions();
+  renderChart = (resize) => {
+    this.updateDimensions();
     //Set dimensions of svg element and translations
-    svg.attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom);
-    g.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    this.svg.attr("width", this.width + this.margin.left + this.margin.right)
+      .attr("height", this.height + this.margin.top + this.margin.bottom);
+    this.g.attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
     //Set the radius to lesser of width or height and remove the margins
     //Calculate the new radius
-    calculateRadius();
-    doughnut.attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+    this.calculateRadius();
+    this.doughnut.attr("transform", "translate(" + this.outerRadius + ", " + this.outerRadius + ")");
     //Setup the arc
-    arc.outerRadius(outerRadius)
-      .innerRadius(outerRadius * (1-arcWidth))
-      .cornerRadius(cornerRadius)
-      .padAngle(arcPadding);
+    this.arc.outerRadius(this.outerRadius)
+      .innerRadius(this.outerRadius * (1-this.props.arcWidth))
+      .cornerRadius(this.props.cornerRadius)
+      .padAngle(this.props.arcPadding);
     //Remove the old stuff
-    doughnut.selectAll(".arc").remove();
-    needle.selectAll("*").remove();
-    g.selectAll(".text-group").remove();
+    this.doughnut.selectAll(".arc").remove();
+    this.needle.selectAll("*").remove();
+    this.g.selectAll(".text-group").remove();
     //Draw the arc
-    var arcPaths = doughnut.selectAll(".arc")
-        .data(pie(arcData))
+    var arcPaths = this.doughnut.selectAll(".arc")
+        .data(this.pie(this.arcData))
       .enter().append("g")
         .attr("class", "arc");
     arcPaths.append("path")
-        .attr("d", arc)
+        .attr("d", this.arc)
         .style("fill", function(d) { return d.data.color; });
 
-    drawNeedle(resize);
+    this.drawNeedle(resize);
     //Translate the needle starting point to the middle of the arc
-    needle.attr("transform", "translate(" + outerRadius + ", " + outerRadius + ")");
+    this.needle.attr("transform", "translate(" + this.outerRadius + ", " + this.outerRadius + ")");
   }
 
   updateDimensions = () => {
-    var divDimensions = container.node().getBoundingClientRect(),
+    //TODO: Fix so that the container is included in the component
+    const { marginInPercent } = this.props;
+    var divDimensions = this.container.node().getBoundingClientRect(),
         divWidth = divDimensions.width,
         divHeight = divDimensions.height;
     //Set the new width and horizontal margins
-    margin.left = divWidth * marginInPercent;
-    margin.right = divWidth * marginInPercent;
-    width = divWidth - margin.left - margin.right;
+    this.margin.left = divWidth * marginInPercent;
+    this.margin.right = divWidth * marginInPercent;
+    this.width = divWidth - this.margin.left - this.margin.right;
 
-    margin.top = divHeight * marginInPercent;
-    margin.bottom = divHeight * marginInPercent;
-    height = divHeight - margin.top - margin.bottom;
+    this.margin.top = divHeight * marginInPercent;
+    this.margin.bottom = divHeight * marginInPercent;
+    this.height = divHeight - this.margin.top - this.margin.bottom;
   }
 
   calculateRadius = () => {
@@ -147,66 +153,64 @@ class GaugeChart extends React.Component {
     //For the whole arc to fit
 
     //First check if it is the width or the height that is the "limiting" dimension
-    if(width < 2*height) {
+    if(this.width < 2*this.height) {
       //Then the width limits the size of the chart
       //Set the radius to the width - the horizontal margins
-      outerRadius = (width - margin.left - margin.right)/2;
+      this.outerRadius = (this.width - this.margin.left - this.margin.right)/2;
     }
     else {
-      outerRadius = height - margin.top - margin.bottom;
+      this.outerRadius = this.height - this.margin.top - this.margin.bottom;
     }
-    centerGraph();
+    this.centerGraph();
   }
 
   //Calculates new margins to make the graph centered
   centerGraph = () => {
-    margin.left = width/2 - outerRadius + margin.right;
-    g.attr("transform", "translate(" + margin.left + ", " + margin.top + ")");
+    this.margin.left = this.width/2 - this.outerRadius + this.margin.right;
+    this.g.attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
   }
   
   //If 'resize' is true then the animation does not play
   drawNeedle = (resize) => {
-    var needleLength = outerRadius*0.55,    //TODO: Maybe it should be specified as a percentage of the arc radius?
-        needleRadius = 15,
-        centerPoint = [0, -needleRadius/2],
-        topPoint = [centerPoint[0], centerPoint[1] - needleLength],
-        leftPoint = [centerPoint[0] - needleRadius, centerPoint[1]],
-        rightPoint = [centerPoint[0] + needleRadius, centerPoint[1]];
+    const { percent } = this.props;
+    const { container, calculateRotation } = this;
+    var needleRadius = 15,
+        centerPoint = [0, -needleRadius/2];
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
-    var pathStr = calculateRotation(0);
-    needle.append("path")
+    var pathStr = this.calculateRotation(0);
+    this.needle.append("path")
       .attr("d", pathStr)
       .attr("fill", "#464A4F");
     //Add a circle at the bottom of needle
-    needle.append("circle")
+    this.needle.append("circle")
       .attr("cx", centerPoint[0])
       .attr("cy", centerPoint[1])
       .attr("r", needleRadius)
       .attr("fill", "#464A4F");
-    addText(percent);
+    this.addText(this.props.percent);
     //Rotate the needle
     if(!resize){
-      needle.transition()
+      this.needle.transition()
       .delay(500)
       .ease(d3.easeElastic)
       .duration(3000)
       .tween('progress', function(){
         return function(percentOfPercent){
           var progress = percentOfPercent * percent;
-          return d3.select(`${containerID} .needle path`).attr("d", calculateRotation(progress));
+          return container.select(`.needle path`).attr("d", calculateRotation(progress));
         }
       });
     }
     else{
-      d3.select(`${containerID} .needle path`).attr("d", calculateRotation(percent));
+      container.select(`.needle path`).attr("d", calculateRotation(percent));
     }
   }
 
   calculateRotation = (percent) => {
-    var needleLength = outerRadius*0.55,    //TODO: Maybe it should be specified as a percentage of the arc radius?
+    var needleLength = this.outerRadius*0.55,    //TODO: Maybe it should be specified as a percentage of the arc radius?
         needleRadius = 15,
-        theta = percentToRad(percent),
+        theta = this.percentToRad(percent),
         centerPoint = [0, -needleRadius/2],
         topPoint = [centerPoint[0] - needleLength * Math.cos(theta),
                     centerPoint[1] - needleLength * Math.sin(theta)],
@@ -226,6 +230,7 @@ class GaugeChart extends React.Component {
   //Depending on the number of levels in the chart
   //This function returns the same number of colors
   getColors = () => {
+    const { nrOfLevels, colors } = this.props;
     var colorScale = d3.scaleLinear()
       .domain([1, nrOfLevels])
       .range([colors[0], colors[colors.length-1]])  //Use the first and the last color as range
@@ -240,16 +245,19 @@ class GaugeChart extends React.Component {
   //Adds text undeneath the graft to display which percentage is the current one
   addText = (percentage) => {
     var textPadding = 20;
-    g.append("g")
+    this.g.append("g")
         .attr("class", "text-group")
-        .attr("transform", `translate(${outerRadius}, ${outerRadius / 2 + textPadding})`)
+        .attr("transform", `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append("text")
         .text(`${percentage*100}%`)
         .attr("class", "percent-text");
   }
 
   render() {
-
+    return (
+      <div id={containerID} >
+      </div>
+    )
   }
 }
 
@@ -260,17 +268,17 @@ GaugeChart.defaultProps = {
   cornerRadius: 6,
   nrOfLevels: 3,
   percent: 0.4,
-  arcPadding: 0.05,
-  arcWidth: 0.2,
-  colors: ["#00FF00", "#FF0000"]
+  arcPadding: 0.05,               //The padding between arcs, in rad
+  arcWidth: 0.2,                  //The width of the arc given in percent of the radius
+  colors: ["#00FF00", "#FF0000"]  //Default defined colors
 }
 
-GaugeChart.PropTypes = {
-  marginInPercent: PropTypes.number,
-  cornerRadius: PropTypes.number,
-  nrOfLevels: PropTypes.number,
-  percent: PropTypes.number,
-  arcPadding: PropTypes.number,
-  arcWidth: PropTypes.number,
-  colors: PropTypes.array
-}
+// GaugeChart.PropTypes = {
+//   marginInPercent: PropTypes.number,
+//   cornerRadius: PropTypes.number,
+//   nrOfLevels: PropTypes.number,
+//   percent: PropTypes.number,
+//   arcPadding: PropTypes.number,
+//   arcWidth: PropTypes.number,
+//   colors: PropTypes.array
+// }

@@ -1,38 +1,29 @@
 {
   "name": "react-gauge-chart",
-  "version": "1.0.0",
-  "description": "React component for displaying a gauge chart",
-  "main": "build/index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Martin36/react-gauge-chart.git"
-  },
-  "peerDependencies": {
-    "react": "^16.4.0"
-  },
-  "scripts": {
-    "start": "webpack --watch",
-    "build": "webpack"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Martin36/react-gauge-chart/issues"
-  },
-  "homepage": "https://github.com/Martin36/react-gauge-chart#readme",
+  "version": "0.1.0",
+  "private": false,
   "dependencies": {
     "d3": "^5.9.1",
-    "prop-types": "^15.7.2",
     "react": "^16.8.2",
-    "webpack": "^4.29.5"
+    "react-dom": "^16.8.2",
+    "react-scripts": "2.1.5"
   },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "webpack-cli": "^3.2.3"
+    "@babel/core": "^7.3.3"
   }
 }
