@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+
 .App {
   text-align: center;
 }
@@ -22,6 +26,14 @@
 .App-link {
   color: #61dafb;
 }
+.percent-text{
+  fill: #fff;
+  text-anchor: middle;
+  font-size: 60;
+  font-family: 'Roboto', sans-serif;
+}
+
+
 
 @keyframes App-logo-spin {
   from {

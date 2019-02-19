@@ -35,10 +35,6 @@ class GaugeChart extends React.Component {
     this.arc = d3.arc();
     this.pie = d3.pie();
     
-    this.state = {
-      width: 0,
-      height: 0
-    }
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
     if(nrOfLevels === colors.length){
@@ -250,12 +246,17 @@ class GaugeChart extends React.Component {
         .attr("transform", `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append("text")
         .text(`${percentage*100}%`)
+        .style("font-size", () => {
+          if(this.width < 500 || this.height < 250) return 40;
+          if(this.width < 1000 || this.height < 500) return 80;
+          else return 100;
+        })
         .attr("class", "percent-text");
   }
 
   render() {
     return (
-      <div id={containerID} >
+      <div id={containerID} style={{width: "100%", heigh: "100%"}} >
       </div>
     )
   }
