@@ -7,7 +7,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <GaugeChart />
+          <GaugeChart percent={0.6} />
         </header>
       </div>
     );
