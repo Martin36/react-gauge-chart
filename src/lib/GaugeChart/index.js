@@ -16,7 +16,6 @@ TODO: Lägg till info om 'data' i docs
 //Constants
 const startAngle = -Math.PI/2;  //Negative x-axis
 const endAngle = Math.PI/2;     //Positive x-axis
-const containerID = "gauge-container";
 
 class GaugeChart extends React.Component {
   //TODO: Change props to props    
@@ -57,9 +56,11 @@ class GaugeChart extends React.Component {
   }
 
   componentDidMount() {
-    this.container = d3.select(`#${containerID}`);
-    //Initialize chart
-    this.initChart();
+    if(this.props.id){
+      this.container = d3.select(`#${this.props.id}`);
+      //Initialize chart
+      this.initChart();  
+    }
   }
 
   componentDidUpdate() {
@@ -133,6 +134,7 @@ class GaugeChart extends React.Component {
     var divDimensions = this.container.node().getBoundingClientRect(),
         divWidth = divDimensions.width,
         divHeight = divDimensions.height;
+    console.log(divDimensions);
     //Set the new width and horizontal margins
     this.margin.left = divWidth * marginInPercent;
     this.margin.right = divWidth * marginInPercent;
@@ -140,7 +142,8 @@ class GaugeChart extends React.Component {
 
     this.margin.top = divHeight * marginInPercent;
     this.margin.bottom = divHeight * marginInPercent;
-    this.height = divHeight - this.margin.top - this.margin.bottom;
+    this.height = this.width / 2 - this.margin.top - this.margin.bottom;
+    //this.height = divHeight - this.margin.top - this.margin.bottom;
   }
 
   calculateRadius = () => {
@@ -258,7 +261,7 @@ class GaugeChart extends React.Component {
 
   render() {
     return (
-      <div id={containerID} style={{width: "100%", heigh: "100%"}} >
+      <div id={this.props.id} style={{width: "100%"}} >
       </div>
     )
   }
@@ -274,10 +277,12 @@ GaugeChart.defaultProps = {
   arcPadding: 0.05,               //The padding between arcs, in rad
   arcWidth: 0.2,                  //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"],  //Default defined colors
-  textColor: '#fff'
+  textColor: '#fff',
+  height: "300px"
 }
 
 GaugeChart.propTypes = {
+  id: PropTypes.string.isRequired,
   marginInPercent: PropTypes.number,
   cornerRadius: PropTypes.number,
   nrOfLevels: PropTypes.number,
@@ -285,5 +290,6 @@ GaugeChart.propTypes = {
   arcPadding: PropTypes.number,
   arcWidth: PropTypes.number,
   colors: PropTypes.array,
-  textColor: PropTypes.string
+  textColor: PropTypes.string,
+  height: PropTypes.string
 }
