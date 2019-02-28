@@ -10,7 +10,7 @@ class App extends Component {
       <Container>
         <Row>
           <Col xs={12} lg={{offset: 2, span: 8}}>
-            <h1>React Gauge Chart</h1>
+            <h1>React Gauge Chart Demo</h1>
           </Col>
         </Row>  
         <Row>
@@ -21,6 +21,16 @@ class App extends Component {
           <Col xs={12} lg={6}>
             <h6>GaugeChart with 20 levels</h6>
             <GaugeChart id="gauge-chart2" nrOfLevels={20} />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12} lg={6}>
+            <h6>GaugeChart with custom colors</h6>
+            <GaugeChart id="gauge-chart3" nrOfLevels={30} colors={["#FF5F6D", "#FFC371"]} />
+          </Col>
+          <Col xs={12} lg={6}>
+            <h6>GaugeChart with larger padding between elements</h6>
+            <GaugeChart id="gauge-chart4" nrOfLevels={10} arcPadding={0.1} cornerRadius={3} percent={0.6} />
           </Col>
         </Row>
       </Container>
