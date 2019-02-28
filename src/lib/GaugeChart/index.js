@@ -278,7 +278,6 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2,                  //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"],  //Default defined colors
   textColor: '#fff',
-  height: "300px"
 }
 
 GaugeChart.propTypes = {
@@ -291,5 +290,4 @@ GaugeChart.propTypes = {
   arcWidth: PropTypes.number,
   colors: PropTypes.array,
   textColor: PropTypes.string,
-  height: PropTypes.string
 }

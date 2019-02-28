@@ -26,7 +26,7 @@ class App extends Component {
         <Row>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with custom colors</h6>
-            <GaugeChart id="gauge-chart3" nrOfLevels={30} colors={["#FF5F6D", "#FFC371"]} />
+            <GaugeChart id="gauge-chart3" nrOfLevels={30} colors={["#FF5F6D", "#FFC371"]} arcWidth={0.3} percent={0.37} />
           </Col>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with larger padding between elements</h6>
