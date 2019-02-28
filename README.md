@@ -1,14 +1,35 @@
 # react-gauge-chart
-React component for displaying a gauge chart
+React component for displaying a gauge chart, using D3.js
 
-##### Options for the Gague chart
-- `nrOfLevels` specifies the number of separate arc parts in the graph.
-- `margin` sets the margin from the edge of the SVG in percent to the outer radius of the arc. The value should be given as a decimal number in the range `[0, 1]`. Default set to `0.05` (5%).
-- `arcPadding` sets the padding in percent between the arcs in the chart. The value should be given as a decimal number in the range `[0, 1]`. Default value `0.05` (5%)
-- `arcWidth` sets the width of the arc in percent. The value should be given as a decimal number in the range `[0, 1]`. Default value `0.2` (20%)
-- `cornerRadius` sets the corner radius for the arcs. Default value `6`. Set to `0` if no corner radius is wanted
-- `colors` should be an array containing colors in hex format. Default values is hsl interpolation between **green** and **red**.
+# Usage
+Install it by running `npm install react-gauge-chart`. Then to use it:
 
+```jsx
+import GaugeChart from 'react-gauge-chart'
+
+<GaugeChart id="gauge-chart1" />
+```
+
+# Demo
+
+
+# API
+
+## <GaugeChart />
+
+The props for the chart:
+
+| Name            | PropType                    | Description                                                    | Default value          |
+|-----------------|-----------------------------|----------------------------------------------------------------|------------------------|
+| id              | PropTypes.string.isRequired | Used for the identification of the div surrounding the chart   |                        |
+| marginInPercent | PropTypes.number            | Margin for the chart inside the containing SVG element         | 0.05                   |
+| cornerRadius    | PropTypes.number            | Corner radius for the elements in the chart                    | 6                      |
+| nrOfLevels      | PropTypes.number            | The number of elements displayed in the arc                    | 3                      |
+| percent         | PropTypes.number            | The number where the pointer should point to (between 0 and 1) | 0.4                    |
+| arcPadding      | PropTypes.number            | The distance between the elements in the arc                   | 0.05                   |
+| arcWidth        | PropTypes.number            | The thickness of the arc                                       | 0.2                    |
+| colors          | PropTypes.array             | An array of colors in HEX format displayed in the arc          | ["#00FF00", "#FF0000"] |
+| textColor       | PropTypes.string            | The color of the text                                          | "#FFFFFF"              |
 
 ##### Colors for the chart
 
