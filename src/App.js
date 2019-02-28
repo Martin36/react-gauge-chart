@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import GaugeChart from './components/GaugeChart';
+import GaugeChart from './lib';
 
 class App extends Component {
   render() {

@@ -252,6 +252,7 @@ class GaugeChart extends React.Component {
           if(this.width < 1000 || this.height < 500) return 80;
           else return 100;
         })
+        .style("fill", this.props.textColor)
         .attr("class", "percent-text");
   }
 
@@ -272,7 +273,8 @@ GaugeChart.defaultProps = {
   percent: 0.4,
   arcPadding: 0.05,               //The padding between arcs, in rad
   arcWidth: 0.2,                  //The width of the arc given in percent of the radius
-  colors: ["#00FF00", "#FF0000"]  //Default defined colors
+  colors: ["#00FF00", "#FF0000"],  //Default defined colors
+  textColor: '#fff'
 }
 
 GaugeChart.propTypes = {
@@ -282,5 +284,6 @@ GaugeChart.propTypes = {
   percent: PropTypes.number,
   arcPadding: PropTypes.number,
   arcWidth: PropTypes.number,
-  colors: PropTypes.array
+  colors: PropTypes.array,
+  textColor: PropTypes.string
 }
