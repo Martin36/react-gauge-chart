@@ -11,7 +11,7 @@ import GaugeChart from 'react-gauge-chart'
 ```
 
 # Demo
-
+https://martin36.github.io/react-gauge-chart/
 
 # API
 
