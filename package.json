@@ -2,16 +2,20 @@
   "name": "react-gauge-chart",
   "version": "0.1.0",
   "private": false,
-  "dependencies": {
-    "d3": "^5.9.1",
-    "react": "^16.8.2",
-    "react-bootstrap": "^1.0.0-beta.5",
-    "react-dom": "^16.8.2",
-    "react-scripts": "2.1.5"
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Martin36/react-gauge-chart"
   },
+  "dependencies": {},
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "set NODE_ENV=production&& babel src/lib --out-dir dist  --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -25,6 +29,17 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/core": "^7.3.3"
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "babel-cli": "^6.26.0",
+    "d3": "^5.9.1",
+    "react": "^16.8.2",
+    "react-bootstrap": "^1.0.0-beta.5",
+    "react-dom": "^16.8.2",
+    "react-scripts": "2.1.5"
+  },
+  "peerDependencies": {
+    "react": "^16.8.2",
+    "react-dom": "^16.8.2"
   }
 }
