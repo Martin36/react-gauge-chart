@@ -10,12 +10,43 @@ import GaugeChart from 'react-gauge-chart'
 <GaugeChart id="gauge-chart1" />
 ```
 
+## Examples
+
+Check the demo below for live examples of the charts
+
+#### To create a default chart
+
+```jsx
+<GaugeChart id="gauge-chart1" />
+```
+
+#### Chart with 20 levels and pointer at 86%
+
+```jsx
+<GaugeChart id="gauge-chart2" nrOfLevels={20} percent={0.86} />
+```
+
+#### Chart with custom colors and larger arc width
+
+```jsx
+<GaugeChart id="gauge-chart3" nrOfLevels={30} colors={["#FF5F6D", "#FFC371"]} arcWidth={0.3} percent={0.37} />
+```
+
+#### Chart with other corner radius and larger padding between arcs
+
+```jsx
+<GaugeChart id="gauge-chart4" nrOfLevels={10} arcPadding={0.1} cornerRadius={3} percent={0.6} />
+```
+
+
 # Demo
 https://martin36.github.io/react-gauge-chart/
 
 # API
 
 ## <GaugeChart />
+
+### Warning: Do not use the same `id` for multiple charts, as it will put multiple charts in the same container
 
 The props for the chart:
 
