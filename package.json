@@ -4,6 +4,8 @@
   "private": false,
   "main": "dist/index.js",
   "module": "dist/index.js",
+  "homepage": "https://martin36.github.io/react-gauge-chart/",
+  "license": "MIT",
   "files": [
     "dist",
     "README.md"
@@ -12,12 +14,16 @@
     "type": "git",
     "url": "https://github.com/Martin36/react-gauge-chart"
   },
-  "dependencies": {},
+  "dependencies": {
+    "gh-pages": "^2.0.1"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "build": "set NODE_ENV=production&& babel src/lib --out-dir dist  --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
