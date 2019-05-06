@@ -1,7 +1,6 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.1.3",
-  "private": false,
+  "version": "0.1.4",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "homepage": "https://martin36.github.io/react-gauge-chart/",
@@ -19,7 +18,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "set NODE_ENV=production&& babel --copy-files src/lib --out-dir dist --ignore __tests__,spec.js,test.js,__snapshots__",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -47,5 +46,6 @@
   "peerDependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
-  }
+  },
+  "keywords": ["visualization", "react", "gauge chart", "speedometer"]
 }
