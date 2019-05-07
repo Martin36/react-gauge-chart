@@ -1,9 +1,16 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.1.4",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
+  "version": "0.1.7",
+  "main": "dist/index",
+  "module": "dist/index",
+  "typings": "dist/index",
   "homepage": "https://martin36.github.io/react-gauge-chart/",
+  "keywords": [
+    "visualization",
+    "react",
+    "gauge chart",
+    "speedometer"
+  ],
   "license": "MIT",
   "files": [
     "dist",
@@ -14,11 +21,12 @@
     "url": "https://github.com/Martin36/react-gauge-chart"
   },
   "dependencies": {
-    "d3": "^5.9.1"
+    "d3": "^5.9.2"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "set NODE_ENV=production&& babel --copy-files src/lib --out-dir dist --ignore __tests__,spec.js,test.js,__snapshots__",
+    "prebuild": "rimraf dist",
+    "build": "cross-env NODE_ENV=production babel src/lib --out-dir dist --copy-files --ignore __tests__,spec.js,test.js,__snapshots__",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -34,18 +42,22 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/runtime": "^7.4.4",
     "babel-cli": "^6.26.0",
-    "react": "^16.8.2",
-    "react-bootstrap": "^1.0.0-beta.5",
-    "react-dom": "^16.8.2",
+    "babel-preset-react-app": "^8.0.0",
+    "cross-env": "^5.2.0",
+    "gh-pages": "^2.0.1",
+    "react": "^16.8.6",
+    "react-bootstrap": "^1.0.0-beta.8",
+    "react-dom": "^16.8.6",
     "react-scripts": "2.1.5",
-    "gh-pages": "^2.0.1"
+    "rimraf": "^2.6.3"
   },
   "peerDependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
-  },
-  "keywords": ["visualization", "react", "gauge chart", "speedometer"]
+  }
 }

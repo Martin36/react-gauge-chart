@@ -134,7 +134,6 @@ class GaugeChart extends React.Component {
     var divDimensions = this.container.node().getBoundingClientRect(),
         divWidth = divDimensions.width,
         divHeight = divDimensions.height;
-    console.log(divDimensions);
     //Set the new width and horizontal margins
     this.margin.left = divWidth * marginInPercent;
     this.margin.right = divWidth * marginInPercent;

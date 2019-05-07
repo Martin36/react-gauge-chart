@@ -2,8 +2,8 @@ import _classCallCheck from "@babel/runtime/helpers/esm/classCallCheck";
 import _createClass from "@babel/runtime/helpers/esm/createClass";
 import _possibleConstructorReturn from "@babel/runtime/helpers/esm/possibleConstructorReturn";
 import _getPrototypeOf from "@babel/runtime/helpers/esm/getPrototypeOf";
-import _inherits from "@babel/runtime/helpers/esm/inherits";
 import _assertThisInitialized from "@babel/runtime/helpers/esm/assertThisInitialized";
+import _inherits from "@babel/runtime/helpers/esm/inherits";
 import React from "react";
 import * as d3 from 'd3';
 import './style.css';
@@ -102,9 +102,8 @@ function (_React$Component) {
 
       var divDimensions = _this.container.node().getBoundingClientRect(),
           divWidth = divDimensions.width,
-          divHeight = divDimensions.height;
+          divHeight = divDimensions.height; //Set the new width and horizontal margins
 
-      console.log(divDimensions); //Set the new width and horizontal margins
 
       _this.margin.left = divWidth * marginInPercent;
       _this.margin.right = divWidth * marginInPercent;
@@ -140,7 +139,7 @@ function (_React$Component) {
     _this.drawNeedle = function (resize) {
       var percent = _this.props.percent;
 
-      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+      var _assertThisInitialize = _assertThisInitialized(_this),
           container = _assertThisInitialize.container,
           calculateRotation = _assertThisInitialize.calculateRotation;
 
