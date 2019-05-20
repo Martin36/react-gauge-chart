@@ -166,7 +166,11 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "drawNeedle", function (resize) {
-      var percent = _this.props.percent;
+      var _this$props = _this.props,
+          percent = _this$props.percent,
+          needleColor = _this$props.needleColor,
+          needleBaseColor = _this$props.needleBaseColor,
+          hideText = _this$props.hideText;
 
       var _assertThisInitialize = _assertThisInitialized(_this),
           container = _assertThisInitialize.container,
@@ -178,12 +182,14 @@ function (_React$Component) {
 
       var pathStr = _this.calculateRotation(0);
 
-      _this.needle.append("path").attr("d", pathStr).attr("fill", "#464A4F"); //Add a circle at the bottom of needle
+      _this.needle.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
 
 
-      _this.needle.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", "#464A4F");
+      _this.needle.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
 
-      _this.addText(_this.props.percent); //Rotate the needle
+      if (!hideText) {
+        _this.addText(percent);
+      } //Rotate the needle
 
 
       if (!resize) {
@@ -217,9 +223,9 @@ function (_React$Component) {
     });
 
     _defineProperty(_assertThisInitialized(_this), "getColors", function () {
-      var _this$props = _this.props,
-          nrOfLevels = _this$props.nrOfLevels,
-          colors = _this$props.colors;
+      var _this$props2 = _this.props,
+          nrOfLevels = _this$props2.nrOfLevels,
+          colors = _this$props2.colors;
       var colorScale = d3.scaleLinear().domain([1, nrOfLevels]).range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
       .interpolate(d3.interpolateHsl);
       var colorArray = [];
@@ -240,9 +246,9 @@ function (_React$Component) {
       }).style("fill", _this.props.textColor).attr("class", "percent-text");
     });
 
-    var _this$props2 = _this.props,
-        _nrOfLevels = _this$props2.nrOfLevels,
-        _colors = _this$props2.colors; //Class variables
+    var _this$props3 = _this.props,
+        _nrOfLevels = _this$props3.nrOfLevels,
+        _colors = _this$props3.colors; //Class variables
 
     _this.svg = {};
     _this.g = {};
@@ -324,7 +330,10 @@ GaugeChart.defaultProps = {
   //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"],
   //Default defined colors
-  textColor: '#fff'
+  textColor: '#fff',
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false
 };
 GaugeChart.propTypes = {
   id: _propTypes.default.string.isRequired,
@@ -335,5 +344,8 @@ GaugeChart.propTypes = {
   arcPadding: _propTypes.default.number,
   arcWidth: _propTypes.default.number,
   colors: _propTypes.default.array,
-  textColor: _propTypes.default.string
+  textColor: _propTypes.default.string,
+  needleColor: _propTypes.default.string,
+  needleBaseColor: _propTypes.default.string,
+  hideText: _propTypes.default.bool
 };
