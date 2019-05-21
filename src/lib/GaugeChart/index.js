@@ -17,6 +17,14 @@ TODO: Lägg till info om 'data' i docs
 const startAngle = -Math.PI/2;  //Negative x-axis
 const endAngle = Math.PI/2;     //Positive x-axis
 
+// Props that should cause an animation on update
+const animateNeedleProps = [
+  'marginInPercent',
+  'arcPadding',
+  'percent',
+  'nrOfLevels',
+];
+
 class GaugeChart extends React.Component {
   //TODO: Change props to props    
   constructor(props) {
@@ -63,13 +71,21 @@ class GaugeChart extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     //Initialize chart
     //TODO: Maybe not call this here?
-    this.initChart();
+    
+    // Always redraw the chart, but potentially do not animate it
+    const resize = animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
+    this.initChart(true, resize);
   }
 
-  initChart = () => {
+  initChart = (update, resize = false) => {
+    if (update) {
+      this.renderChart(resize);
+      return;
+    }
+
     this.svg = this.container.append("svg");
     this.g = this.svg.append("g")   //Used for margins
     this.doughnut = this.g.append("g")
@@ -90,8 +106,7 @@ class GaugeChart extends React.Component {
       var resize = true;
       this.renderChart(resize);
     });
-    this.renderChart();
-
+    this.renderChart(resize);
   }
 
   //Renders the chart, should be called every time the window is resized

@@ -50,6 +50,9 @@ TODO: Lägg till info om 'data' i docs
 var startAngle = -Math.PI / 2; //Negative x-axis
 
 var endAngle = Math.PI / 2; //Positive x-axis
+// Props that should cause an animation on update
+
+var animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels'];
 
 var GaugeChart =
 /*#__PURE__*/
@@ -64,7 +67,15 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(GaugeChart).call(this, props));
 
-    _defineProperty(_assertThisInitialized(_this), "initChart", function () {
+    _defineProperty(_assertThisInitialized(_this), "initChart", function (update) {
+      var resize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (update) {
+        _this.renderChart(resize);
+
+        return;
+      }
+
       _this.svg = _this.container.append("svg");
       _this.g = _this.svg.append("g"); //Used for margins
 
@@ -85,7 +96,7 @@ function (_React$Component) {
         _this.renderChart(resize);
       });
 
-      _this.renderChart();
+      _this.renderChart(resize);
     });
 
     _defineProperty(_assertThisInitialized(_this), "renderChart", function (resize) {
@@ -297,10 +308,16 @@ function (_React$Component) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate() {
+    value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
       //Initialize chart
       //TODO: Maybe not call this here?
-      this.initChart();
+      // Always redraw the chart, but potentially do not animate it
+      var resize = animateNeedleProps.some(function (key) {
+        return prevProps[key] !== _this2.props[key];
+      });
+      this.initChart(true, resize);
     }
   }, {
     key: "render",
