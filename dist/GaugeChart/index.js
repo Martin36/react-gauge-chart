@@ -314,7 +314,7 @@ function (_React$Component) {
       //Initialize chart
       //TODO: Maybe not call this here?
       // Always redraw the chart, but potentially do not animate it
-      var resize = animateNeedleProps.some(function (key) {
+      var resize = !animateNeedleProps.some(function (key) {
         return prevProps[key] !== _this2.props[key];
       });
       this.initChart(true, resize);

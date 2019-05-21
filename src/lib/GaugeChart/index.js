@@ -76,7 +76,7 @@ class GaugeChart extends React.Component {
     //TODO: Maybe not call this here?
     
     // Always redraw the chart, but potentially do not animate it
-    const resize = animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
+    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
     this.initChart(true, resize);
   }
 
