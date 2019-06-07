@@ -249,11 +249,7 @@ class GaugeChart extends React.Component {
         .attr("transform", `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append("text")
         .text(`${percentage*100}%`)
-        .style("font-size", () => {
-          if(this.width < 500 || this.height < 250) return 40;
-          if(this.width < 1000 || this.height < 500) return 80;
-          else return 100;
-        })
+        .style("font-size", () => `${this.width / 10}px`)
         .style("fill", this.props.textColor)
         .attr("class", "percent-text");
   }
