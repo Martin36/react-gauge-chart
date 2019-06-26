@@ -248,10 +248,14 @@ class GaugeChart extends React.Component {
         .attr("class", "text-group")
         .attr("transform", `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append("text")
-        .text(`${percentage*100}%`)
+        .text(`${this.floatingNumber(percentage)}%`)
         .style("font-size", () => `${this.width / 10}px`)
         .style("fill", this.props.textColor)
         .attr("class", "percent-text");
+  }
+
+  floatingNumber=(value,maxDigits=2) => {
+    return Math.round((value*100)*(10**maxDigits))/10**maxDigits
   }
 
   render() {
