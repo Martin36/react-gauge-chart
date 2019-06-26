@@ -188,7 +188,7 @@ class GaugeChart extends React.Component {
   drawNeedle = (resize) => {
     const { percent, needleColor, needleBaseColor, hideText } = this.props;
     const { container, calculateRotation } = this;
-    var needleRadius = 15,
+    var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
         centerPoint = [0, -needleRadius/2];
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
@@ -225,7 +225,7 @@ class GaugeChart extends React.Component {
 
   calculateRotation = (percent) => {
     var needleLength = this.outerRadius*0.55,    //TODO: Maybe it should be specified as a percentage of the arc radius?
-        needleRadius = 15,
+        needleRadius = 15*(this.width / 500),
         theta = this.percentToRad(percent),
         centerPoint = [0, -needleRadius/2],
         topPoint = [centerPoint[0] - needleLength * Math.cos(theta),
