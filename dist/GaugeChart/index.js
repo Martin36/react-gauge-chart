@@ -187,8 +187,9 @@ function (_React$Component) {
           container = _assertThisInitialize.container,
           calculateRotation = _assertThisInitialize.calculateRotation;
 
-      var needleRadius = 15,
-          centerPoint = [0, -needleRadius / 2]; //Draw the triangle
+      var needleRadius = 15 * (_this.width / 500),
+          // Make the needle radius responsive
+      centerPoint = [0, -needleRadius / 2]; //Draw the triangle
       //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
 
       var pathStr = _this.calculateRotation(0);
@@ -218,7 +219,7 @@ function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "calculateRotation", function (percent) {
       var needleLength = _this.outerRadius * 0.55,
           //TODO: Maybe it should be specified as a percentage of the arc radius?
-      needleRadius = 15,
+      needleRadius = 15 * (_this.width / 500),
           theta = _this.percentToRad(percent),
           centerPoint = [0, -needleRadius / 2],
           topPoint = [centerPoint[0] - needleLength * Math.cos(theta), centerPoint[1] - needleLength * Math.sin(theta)],
@@ -251,10 +252,14 @@ function (_React$Component) {
     _defineProperty(_assertThisInitialized(_this), "addText", function (percentage) {
       var textPadding = 20;
 
-      _this.g.append("g").attr("class", "text-group").attr("transform", "translate(".concat(_this.outerRadius, ", ").concat(_this.outerRadius / 2 + textPadding, ")")).append("text").text("".concat(percentage * 100, "%")).style("font-size", function () {
-        if (_this.width < 500 || _this.height < 250) return 40;
-        if (_this.width < 1000 || _this.height < 500) return 80;else return 100;
+      _this.g.append("g").attr("class", "text-group").attr("transform", "translate(".concat(_this.outerRadius, ", ").concat(_this.outerRadius / 2 + textPadding, ")")).append("text").text("".concat(_this.floatingNumber(percentage), "%")).style("font-size", function () {
+        return "".concat(_this.width / 10, "px");
       }).style("fill", _this.props.textColor).attr("class", "percent-text");
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "floatingNumber", function (value) {
+      var maxDigits = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+      return Math.round(value * 100 * Math.pow(10, maxDigits)) / Math.pow(10, maxDigits);
     });
 
     var _this$props3 = _this.props,
