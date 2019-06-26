@@ -1,12 +1,42 @@
-import _classCallCheck from "@babel/runtime/helpers/esm/classCallCheck";
-import _createClass from "@babel/runtime/helpers/esm/createClass";
-import _possibleConstructorReturn from "@babel/runtime/helpers/esm/possibleConstructorReturn";
-import _getPrototypeOf from "@babel/runtime/helpers/esm/getPrototypeOf";
-import _assertThisInitialized from "@babel/runtime/helpers/esm/assertThisInitialized";
-import _inherits from "@babel/runtime/helpers/esm/inherits";
-import React from "react";
-import * as d3 from 'd3';
-import './style.css';
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var d3 = _interopRequireWildcard(require("d3"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+require("./style.css");
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /*
 GaugeChart creates a gauge chart using D3
 The chart is responsive and will have the same width as the "container"
@@ -17,10 +47,12 @@ The svg element surrounding the gauge will always be square
 TODO: Lägg till info om 'data' i docs
 */
 //Constants
-
 var startAngle = -Math.PI / 2; //Negative x-axis
 
 var endAngle = Math.PI / 2; //Positive x-axis
+// Props that should cause an animation on update
+
+var animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels'];
 
 var GaugeChart =
 /*#__PURE__*/
@@ -35,7 +67,15 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(GaugeChart).call(this, props));
 
-    _this.initChart = function () {
+    _defineProperty(_assertThisInitialized(_this), "initChart", function (update) {
+      var resize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+      if (update) {
+        _this.renderChart(resize);
+
+        return;
+      }
+
       _this.svg = _this.container.append("svg");
       _this.g = _this.svg.append("g"); //Used for margins
 
@@ -56,10 +96,10 @@ function (_React$Component) {
         _this.renderChart(resize);
       });
 
-      _this.renderChart();
-    };
+      _this.renderChart(resize);
+    });
 
-    _this.renderChart = function (resize) {
+    _defineProperty(_assertThisInitialized(_this), "renderChart", function (resize) {
       _this.updateDimensions(); //Set dimensions of svg element and translations
 
 
@@ -94,9 +134,9 @@ function (_React$Component) {
 
 
       _this.needle.attr("transform", "translate(" + _this.outerRadius + ", " + _this.outerRadius + ")");
-    };
+    });
 
-    _this.updateDimensions = function () {
+    _defineProperty(_assertThisInitialized(_this), "updateDimensions", function () {
       //TODO: Fix so that the container is included in the component
       var marginInPercent = _this.props.marginInPercent;
 
@@ -111,9 +151,9 @@ function (_React$Component) {
       _this.margin.top = divHeight * marginInPercent;
       _this.margin.bottom = divHeight * marginInPercent;
       _this.height = _this.width / 2 - _this.margin.top - _this.margin.bottom; //this.height = divHeight - this.margin.top - this.margin.bottom;
-    };
+    });
 
-    _this.calculateRadius = function () {
+    _defineProperty(_assertThisInitialized(_this), "calculateRadius", function () {
       //The radius needs to be constrained by the containing div
       //Since it is a half circle we are dealing with the height of the div
       //Only needs to be half of the width, because the width needs to be 2 * radius
@@ -128,16 +168,20 @@ function (_React$Component) {
       }
 
       _this.centerGraph();
-    };
+    });
 
-    _this.centerGraph = function () {
+    _defineProperty(_assertThisInitialized(_this), "centerGraph", function () {
       _this.margin.left = _this.width / 2 - _this.outerRadius + _this.margin.right;
 
       _this.g.attr("transform", "translate(" + _this.margin.left + ", " + _this.margin.top + ")");
-    };
+    });
 
-    _this.drawNeedle = function (resize) {
-      var percent = _this.props.percent;
+    _defineProperty(_assertThisInitialized(_this), "drawNeedle", function (resize) {
+      var _this$props = _this.props,
+          percent = _this$props.percent,
+          needleColor = _this$props.needleColor,
+          needleBaseColor = _this$props.needleBaseColor,
+          hideText = _this$props.hideText;
 
       var _assertThisInitialize = _assertThisInitialized(_this),
           container = _assertThisInitialize.container,
@@ -149,12 +193,14 @@ function (_React$Component) {
 
       var pathStr = _this.calculateRotation(0);
 
-      _this.needle.append("path").attr("d", pathStr).attr("fill", "#464A4F"); //Add a circle at the bottom of needle
+      _this.needle.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
 
 
-      _this.needle.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", "#464A4F");
+      _this.needle.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
 
-      _this.addText(_this.props.percent); //Rotate the needle
+      if (!hideText) {
+        _this.addText(percent);
+      } //Rotate the needle
 
 
       if (!resize) {
@@ -167,9 +213,9 @@ function (_React$Component) {
       } else {
         container.select(".needle path").attr("d", calculateRotation(percent));
       }
-    };
+    });
 
-    _this.calculateRotation = function (percent) {
+    _defineProperty(_assertThisInitialized(_this), "calculateRotation", function (percent) {
       var needleLength = _this.outerRadius * 0.55,
           //TODO: Maybe it should be specified as a percentage of the arc radius?
       needleRadius = 15,
@@ -181,16 +227,16 @@ function (_React$Component) {
 
       var pathStr = "M ".concat(leftPoint[0], " ").concat(leftPoint[1], " L ").concat(topPoint[0], " ").concat(topPoint[1], " L ").concat(rightPoint[0], " ").concat(rightPoint[1]);
       return pathStr;
-    };
+    });
 
-    _this.percentToRad = function (percent) {
+    _defineProperty(_assertThisInitialized(_this), "percentToRad", function (percent) {
       return percent * Math.PI;
-    };
+    });
 
-    _this.getColors = function () {
-      var _this$props = _this.props,
-          nrOfLevels = _this$props.nrOfLevels,
-          colors = _this$props.colors;
+    _defineProperty(_assertThisInitialized(_this), "getColors", function () {
+      var _this$props2 = _this.props,
+          nrOfLevels = _this$props2.nrOfLevels,
+          colors = _this$props2.colors;
       var colorScale = d3.scaleLinear().domain([1, nrOfLevels]).range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
       .interpolate(d3.interpolateHsl);
       var colorArray = [];
@@ -200,20 +246,20 @@ function (_React$Component) {
       }
 
       return colorArray;
-    };
+    });
 
-    _this.addText = function (percentage) {
+    _defineProperty(_assertThisInitialized(_this), "addText", function (percentage) {
       var textPadding = 20;
 
       _this.g.append("g").attr("class", "text-group").attr("transform", "translate(".concat(_this.outerRadius, ", ").concat(_this.outerRadius / 2 + textPadding, ")")).append("text").text("".concat(percentage * 100, "%")).style("font-size", function () {
         if (_this.width < 500 || _this.height < 250) return 40;
         if (_this.width < 1000 || _this.height < 500) return 80;else return 100;
       }).style("fill", _this.props.textColor).attr("class", "percent-text");
-    };
+    });
 
-    var _this$props2 = _this.props,
-        _nrOfLevels = _this$props2.nrOfLevels,
-        _colors = _this$props2.colors; //Class variables
+    var _this$props3 = _this.props,
+        _nrOfLevels = _this$props3.nrOfLevels,
+        _colors = _this$props3.colors; //Class variables
 
     _this.svg = {};
     _this.g = {};
@@ -262,15 +308,21 @@ function (_React$Component) {
     }
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate() {
+    value: function componentDidUpdate(prevProps) {
+      var _this2 = this;
+
       //Initialize chart
       //TODO: Maybe not call this here?
-      this.initChart();
+      // Always redraw the chart, but potentially do not animate it
+      var resize = !animateNeedleProps.some(function (key) {
+        return prevProps[key] !== _this2.props[key];
+      });
+      this.initChart(true, resize);
     }
   }, {
     key: "render",
     value: function render() {
-      return React.createElement("div", {
+      return _react.default.createElement("div", {
         id: this.props.id,
         style: {
           width: "100%"
@@ -280,9 +332,10 @@ function (_React$Component) {
   }]);
 
   return GaugeChart;
-}(React.Component);
+}(_react.default.Component);
 
-export default GaugeChart;
+var _default = GaugeChart;
+exports.default = _default;
 GaugeChart.defaultProps = {
   marginInPercent: 0.05,
   cornerRadius: 6,
@@ -294,5 +347,22 @@ GaugeChart.defaultProps = {
   //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"],
   //Default defined colors
-  textColor: '#fff'
+  textColor: '#fff',
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false
+};
+GaugeChart.propTypes = {
+  id: _propTypes.default.string.isRequired,
+  marginInPercent: _propTypes.default.number,
+  cornerRadius: _propTypes.default.number,
+  nrOfLevels: _propTypes.default.number,
+  percent: _propTypes.default.number,
+  arcPadding: _propTypes.default.number,
+  arcWidth: _propTypes.default.number,
+  colors: _propTypes.default.array,
+  textColor: _propTypes.default.string,
+  needleColor: _propTypes.default.string,
+  needleBaseColor: _propTypes.default.string,
+  hideText: _propTypes.default.bool
 };
