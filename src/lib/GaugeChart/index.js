@@ -40,7 +40,7 @@ class GaugeChart extends React.Component {
 
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
-    const nbArcsToDisplay = props.widths ? props.widths.length : nrOfLevels
+    const nbArcsToDisplay = props.arcsWidth ? props.arcsWidth.length : nrOfLevels
     if (nbArcsToDisplay === colors.length) {
       this.colorArray = colors
     } else {
@@ -51,7 +51,7 @@ class GaugeChart extends React.Component {
     this.arcData = []
     for (var i = 0; i < nbArcsToDisplay; i++) {
       var arcDatum = {
-        value: props.widths && props.widths.length > i ? props.widths[i] : 1,
+        value: props.arcsWidth && props.arcsWidth.length > i ? props.arcsWidth[i] : 1,
         color: this.colorArray[i]
       }
       this.arcData.push(arcDatum)
@@ -255,8 +255,8 @@ class GaugeChart extends React.Component {
   //Depending on the number of levels in the chart
   //This function returns the same number of colors
   getColors = () => {
-    const { nrOfLevels, colors, widths } = this.props
-    const nbArcsToDisplay = widths ? widths.length : nrOfLevels
+    const { nrOfLevels, colors, arcsWidth } = this.props
+    const nbArcsToDisplay = arcsWidth ? arcsWidth.length : nrOfLevels
     var colorScale = d3
       .scaleLinear()
       .domain([1, nbArcsToDisplay])
@@ -316,6 +316,7 @@ GaugeChart.propTypes = {
   percent: PropTypes.number,
   arcPadding: PropTypes.number,
   arcHeight: PropTypes.number,
+  arcsWidth: PropTypes.array,
   colors: PropTypes.array,
   textColor: PropTypes.string,
   needleColor: PropTypes.string,
