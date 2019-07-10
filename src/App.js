@@ -47,7 +47,7 @@ class App extends Component {
                 nrOfLevels={420}
                 widths={[0.5, 0.3, 0.2]}
                 colors={['#5BE12C', '#F5CD19', '#EA4228']}
-                arcWidth={0.2}
+                arcHeight={0.2}
                 percent={0.37}
               />
             </Col>

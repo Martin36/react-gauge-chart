@@ -120,7 +120,7 @@ class GaugeChart extends React.Component {
     //Setup the arc
     this.arc
       .outerRadius(this.outerRadius)
-      .innerRadius(this.outerRadius * (1 - this.props.arcWidth))
+      .innerRadius(this.outerRadius * (1 - this.props.arcHeight))
       .cornerRadius(this.props.cornerRadius)
       .padAngle(this.props.arcPadding)
     //Remove the old stuff
@@ -300,7 +300,7 @@ GaugeChart.defaultProps = {
   nrOfLevels: 3,
   percent: 0.4,
   arcPadding: 0.05, //The padding between arcs, in rad
-  arcWidth: 0.2, //The width of the arc given in percent of the radius
+  arcHeight: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
   needleColor: '#464A4F',
@@ -315,7 +315,7 @@ GaugeChart.propTypes = {
   nrOfLevels: PropTypes.number,
   percent: PropTypes.number,
   arcPadding: PropTypes.number,
-  arcWidth: PropTypes.number,
+  arcHeight: PropTypes.number,
   colors: PropTypes.array,
   textColor: PropTypes.string,
   needleColor: PropTypes.string,
