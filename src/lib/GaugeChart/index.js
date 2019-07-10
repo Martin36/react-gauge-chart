@@ -38,18 +38,21 @@ class GaugeChart extends React.Component {
     this.arc = d3.arc()
     this.pie = d3.pie()
 
+    // We have to make a decision about number of arcs to display
+    // If arcsWidth is setted, we choose arcsWidth length instead of nrOfLevels
+    this.nbArcsToDisplay = props.arcsWidth ? props.arcsWidth.length : nrOfLevels
+
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
-    const nbArcsToDisplay = props.arcsWidth ? props.arcsWidth.length : nrOfLevels
-    if (nbArcsToDisplay === colors.length) {
+    if (this.nbArcsToDisplay === colors.length) {
       this.colorArray = colors
     } else {
       this.colorArray = this.getColors()
     }
     //The data that is used to create the arc
-    //The value is 1 for all objects because the arcs should be of same size
+    // Each arc could have hiw own value width arcsWidth prop
     this.arcData = []
-    for (var i = 0; i < nbArcsToDisplay; i++) {
+    for (var i = 0; i < this.nbArcsToDisplay; i++) {
       var arcDatum = {
         value: props.arcsWidth && props.arcsWidth.length > i ? props.arcsWidth[i] : 1,
         color: this.colorArray[i]
@@ -255,15 +258,14 @@ class GaugeChart extends React.Component {
   //Depending on the number of levels in the chart
   //This function returns the same number of colors
   getColors = () => {
-    const { nrOfLevels, colors, arcsWidth } = this.props
-    const nbArcsToDisplay = arcsWidth ? arcsWidth.length : nrOfLevels
+    const { colors } = this.props
     var colorScale = d3
       .scaleLinear()
-      .domain([1, nbArcsToDisplay])
+      .domain([1, this.nbArcsToDisplay])
       .range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
       .interpolate(d3.interpolateHsl)
     var colorArray = []
-    for (var i = 1; i <= nbArcsToDisplay; i++) {
+    for (var i = 1; i <= this.nbArcsToDisplay; i++) {
       colorArray.push(colorScale(i))
     }
     return colorArray
