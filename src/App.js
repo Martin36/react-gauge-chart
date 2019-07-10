@@ -20,7 +20,7 @@ class App extends Component {
           </Col>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with 20 levels</h6>
-            <GaugeChart id="gauge-chart2" nrOfLevels={20} percent={0.86} />
+            <GaugeChart id="gauge-chart2" nrOfLevels={20} percent={0.86} needleColor="#345243" />
           </Col>
         </Row>
         <Row>

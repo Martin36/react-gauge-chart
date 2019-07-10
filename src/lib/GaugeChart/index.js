@@ -17,6 +17,14 @@ TODO: Lägg till info om 'data' i docs
 const startAngle = -Math.PI/2;  //Negative x-axis
 const endAngle = Math.PI/2;     //Positive x-axis
 
+// Props that should cause an animation on update
+const animateNeedleProps = [
+  'marginInPercent',
+  'arcPadding',
+  'percent',
+  'nrOfLevels',
+];
+
 class GaugeChart extends React.Component {
   //TODO: Change props to props    
   constructor(props) {
@@ -63,13 +71,21 @@ class GaugeChart extends React.Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     //Initialize chart
     //TODO: Maybe not call this here?
-    this.initChart();
+    
+    // Always redraw the chart, but potentially do not animate it
+    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
+    this.initChart(true, resize);
   }
 
-  initChart = () => {
+  initChart = (update, resize = false) => {
+    if (update) {
+      this.renderChart(resize);
+      return;
+    }
+
     this.svg = this.container.append("svg");
     this.g = this.svg.append("g")   //Used for margins
     this.doughnut = this.g.append("g")
@@ -90,8 +106,7 @@ class GaugeChart extends React.Component {
       var resize = true;
       this.renderChart(resize);
     });
-    this.renderChart();
-
+    this.renderChart(resize);
   }
 
   //Renders the chart, should be called every time the window is resized
@@ -171,23 +186,25 @@ class GaugeChart extends React.Component {
   
   //If 'resize' is true then the animation does not play
   drawNeedle = (resize) => {
-    const { percent } = this.props;
+    const { percent, needleColor, needleBaseColor, hideText } = this.props;
     const { container, calculateRotation } = this;
-    var needleRadius = 15,
+    var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
         centerPoint = [0, -needleRadius/2];
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
     var pathStr = this.calculateRotation(0);
     this.needle.append("path")
       .attr("d", pathStr)
-      .attr("fill", "#464A4F");
+      .attr("fill", needleColor);
     //Add a circle at the bottom of needle
     this.needle.append("circle")
       .attr("cx", centerPoint[0])
       .attr("cy", centerPoint[1])
       .attr("r", needleRadius)
-      .attr("fill", "#464A4F");
-    this.addText(this.props.percent);
+      .attr("fill", needleBaseColor);
+    if (!hideText) {
+      this.addText(percent);
+    }
     //Rotate the needle
     if(!resize){
       this.needle.transition()
@@ -208,7 +225,7 @@ class GaugeChart extends React.Component {
 
   calculateRotation = (percent) => {
     var needleLength = this.outerRadius*0.55,    //TODO: Maybe it should be specified as a percentage of the arc radius?
-        needleRadius = 15,
+        needleRadius = 15*(this.width / 500),
         theta = this.percentToRad(percent),
         centerPoint = [0, -needleRadius/2],
         topPoint = [centerPoint[0] - needleLength * Math.cos(theta),
@@ -248,14 +265,14 @@ class GaugeChart extends React.Component {
         .attr("class", "text-group")
         .attr("transform", `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append("text")
-        .text(`${percentage*100}%`)
-        .style("font-size", () => {
-          if(this.width < 500 || this.height < 250) return 40;
-          if(this.width < 1000 || this.height < 500) return 80;
-          else return 100;
-        })
+        .text(`${this.floatingNumber(percentage)}%`)
+        .style("font-size", () => `${this.width / 10}px`)
         .style("fill", this.props.textColor)
         .attr("class", "percent-text");
+  }
+
+  floatingNumber=(value,maxDigits=2) => {
+    return Math.round((value*100)*(10**maxDigits))/10**maxDigits
   }
 
   render() {
@@ -277,6 +294,9 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2,                  //The width of the arc given in percent of the radius
   colors: ["#00FF00", "#FF0000"],  //Default defined colors
   textColor: '#fff',
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false
 }
 
 GaugeChart.propTypes = {
@@ -289,4 +309,7 @@ GaugeChart.propTypes = {
   arcWidth: PropTypes.number,
   colors: PropTypes.array,
   textColor: PropTypes.string,
+  needleColor: PropTypes.string,
+  needleBaseColor: PropTypes.string,
+  hideText: PropTypes.bool
 }
