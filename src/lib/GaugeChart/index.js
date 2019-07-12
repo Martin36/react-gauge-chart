@@ -39,8 +39,8 @@ class GaugeChart extends React.Component {
     this.pie = d3.pie()
 
     // We have to make a decision about number of arcs to display
-    // If arcsWidth is setted, we choose arcsWidth length instead of nrOfLevels
-    this.nbArcsToDisplay = props.arcsWidth ? props.arcsWidth.length : nrOfLevels
+    // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
+    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : nrOfLevels
 
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
@@ -50,11 +50,11 @@ class GaugeChart extends React.Component {
       this.colorArray = this.getColors()
     }
     //The data that is used to create the arc
-    // Each arc could have hiw own value width arcsWidth prop
+    // Each arc could have hiw own value width arcsLength prop
     this.arcData = []
     for (var i = 0; i < this.nbArcsToDisplay; i++) {
       var arcDatum = {
-        value: props.arcsWidth && props.arcsWidth.length > i ? props.arcsWidth[i] : 1,
+        value: props.arcsLength && props.arcsLength.length > i ? props.arcsLength[i] : 1,
         color: this.colorArray[i]
       }
       this.arcData.push(arcDatum)
@@ -123,7 +123,7 @@ class GaugeChart extends React.Component {
     //Setup the arc
     this.arc
       .outerRadius(this.outerRadius)
-      .innerRadius(this.outerRadius * (1 - this.props.arcHeight))
+      .innerRadius(this.outerRadius * (1 - this.props.arcWidth))
       .cornerRadius(this.props.cornerRadius)
       .padAngle(this.props.arcPadding)
     //Remove the old stuff
@@ -302,7 +302,7 @@ GaugeChart.defaultProps = {
   nrOfLevels: 3,
   percent: 0.4,
   arcPadding: 0.05, //The padding between arcs, in rad
-  arcHeight: 0.2, //The width of the arc given in percent of the radius
+  arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
   needleColor: '#464A4F',
@@ -317,8 +317,8 @@ GaugeChart.propTypes = {
   nrOfLevels: PropTypes.number,
   percent: PropTypes.number,
   arcPadding: PropTypes.number,
-  arcHeight: PropTypes.number,
-  arcsWidth: PropTypes.array,
+  arcWidth: PropTypes.number,
+  arcsLength: PropTypes.array,
   colors: PropTypes.array,
   textColor: PropTypes.string,
   needleColor: PropTypes.string,

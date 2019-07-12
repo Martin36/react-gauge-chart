@@ -45,9 +45,8 @@ class App extends Component {
               <GaugeChart
                 id="gauge-chart5"
                 nrOfLevels={420}
-                arcsWidth={[0.38, 0.42, 0.2]}
+                arcsLength={[0.3, 0.5, 0.2]}
                 colors={['#5BE12C', '#F5CD19', '#EA4228']}
-                arcHeight={0.2}
                 percent={0.37}
                 arcPadding={0.02}
               />
