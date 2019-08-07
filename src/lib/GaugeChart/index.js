@@ -186,7 +186,7 @@ class GaugeChart extends React.Component {
   
   //If 'resize' is true then the animation does not play
   drawNeedle = (resize) => {
-    const { percent, needleColor, needleBaseColor, hideText } = this.props;
+    const { percent, needleColor, needleBaseColor, hideText, animate } = this.props;
     const { container, calculateRotation } = this;
     var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
         centerPoint = [0, -needleRadius/2];
@@ -206,7 +206,7 @@ class GaugeChart extends React.Component {
       this.addText(percent);
     }
     //Rotate the needle
-    if(!resize){
+    if(!resize && animate){
       this.needle.transition()
       .delay(500)
       .ease(d3.easeElastic)
@@ -296,7 +296,8 @@ GaugeChart.defaultProps = {
   textColor: '#fff',
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
-  hideText: false
+  hideText: false,
+  animate: true
 }
 
 GaugeChart.propTypes = {
@@ -311,5 +312,6 @@ GaugeChart.propTypes = {
   textColor: PropTypes.string,
   needleColor: PropTypes.string,
   needleBaseColor: PropTypes.string,
-  hideText: PropTypes.bool
+  hideText: PropTypes.bool,
+  animate: PropTypes.bool
 }
