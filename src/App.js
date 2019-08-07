@@ -32,6 +32,12 @@ class App extends Component {
             <h6>GaugeChart with larger padding between elements</h6>
             <GaugeChart id="gauge-chart4" nrOfLevels={10} arcPadding={0.1} cornerRadius={3} percent={0.6} />
           </Col>
+        </Row>  
+        <Row>
+          <Col xs={12} lg={6}>
+            <h6>GaugeChart without animation</h6>
+            <GaugeChart id="gauge-chart5" animate={false} nrOfLevels={15} percent={0.56} needleColor="#345243" />
+          </Col>
         </Row>
       </Container>
 
