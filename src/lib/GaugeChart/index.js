@@ -23,10 +23,11 @@ const animateNeedleProps = [
   'arcPadding',
   'percent',
   'nrOfLevels',
+  'animDelay',
 ];
 
 class GaugeChart extends React.Component {
-  //TODO: Change props to props    
+  //TODO: Change props to props
   constructor(props) {
     super(props);
     const { nrOfLevels, colors } = this.props;
@@ -42,7 +43,7 @@ class GaugeChart extends React.Component {
     this.margin = {};  // = {top: 20, right: 50, bottom: 50, left: 50},
     this.arc = d3.arc();
     this.pie = d3.pie();
-    
+
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
     if(nrOfLevels === colors.length){
@@ -67,14 +68,14 @@ class GaugeChart extends React.Component {
     if(this.props.id){
       this.container = d3.select(`#${this.props.id}`);
       //Initialize chart
-      this.initChart();  
+      this.initChart();
     }
   }
 
   componentDidUpdate(prevProps) {
     //Initialize chart
     //TODO: Maybe not call this here?
-    
+
     // Always redraw the chart, but potentially do not animate it
     const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
     this.initChart(true, resize);
@@ -90,7 +91,7 @@ class GaugeChart extends React.Component {
     this.g = this.svg.append("g")   //Used for margins
     this.doughnut = this.g.append("g")
       .attr("class", "doughnut");
-    
+
       //Set up the pie generator
     //Each arc should be of equal length (or should they?)
     this.pie.value(function(d) { return d.value; })
@@ -183,7 +184,7 @@ class GaugeChart extends React.Component {
     this.margin.left = this.width/2 - this.outerRadius + this.margin.right;
     this.g.attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
   }
-  
+
   //If 'resize' is true then the animation does not play
   drawNeedle = (resize) => {
     const { percent, needleColor, needleBaseColor, hideText } = this.props;
@@ -208,7 +209,7 @@ class GaugeChart extends React.Component {
     //Rotate the needle
     if(!resize){
       this.needle.transition()
-      .delay(500)
+      .delay(this.props.animDelay)
       .ease(d3.easeElastic)
       .duration(3000)
       .tween('progress', function(){
@@ -296,7 +297,8 @@ GaugeChart.defaultProps = {
   textColor: '#fff',
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
-  hideText: false
+  hideText: false,
+  animDelay: 500,
 }
 
 GaugeChart.propTypes = {
