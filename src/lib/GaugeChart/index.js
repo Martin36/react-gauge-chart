@@ -26,7 +26,7 @@ const animateNeedleProps = [
 ];
 
 class GaugeChart extends React.Component {
-  //TODO: Change props to props    
+  //TODO: Change props to props
   constructor(props) {
     super(props);
     const { nrOfLevels, colors } = this.props;
@@ -42,7 +42,7 @@ class GaugeChart extends React.Component {
     this.margin = {};  // = {top: 20, right: 50, bottom: 50, left: 50},
     this.arc = d3.arc();
     this.pie = d3.pie();
-    
+
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
     if(nrOfLevels === colors.length){
@@ -67,22 +67,22 @@ class GaugeChart extends React.Component {
     if(this.props.id){
       this.container = d3.select(`#${this.props.id}`);
       //Initialize chart
-      this.initChart();  
+      this.initChart();
     }
   }
 
   componentDidUpdate(prevProps) {
     //Initialize chart
     //TODO: Maybe not call this here?
-    
+
     // Always redraw the chart, but potentially do not animate it
     const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key]);
-    this.initChart(true, resize);
+    this.initChart(true, resize, prevProps);
   }
 
-  initChart = (update, resize = false) => {
+  initChart = (update, resize = false, prevProps) => {
     if (update) {
-      this.renderChart(resize);
+      this.renderChart(resize, prevProps);
       return;
     }
 
@@ -90,7 +90,7 @@ class GaugeChart extends React.Component {
     this.g = this.svg.append("g")   //Used for margins
     this.doughnut = this.g.append("g")
       .attr("class", "doughnut");
-    
+
       //Set up the pie generator
     //Each arc should be of equal length (or should they?)
     this.pie.value(function(d) { return d.value; })
@@ -104,13 +104,13 @@ class GaugeChart extends React.Component {
     //Set up resize event listener to re-render the chart everytime the window is resized
     window.addEventListener('resize', () => {
       var resize = true;
-      this.renderChart(resize);
+      this.renderChart(resize, prevProps);
     });
-    this.renderChart(resize);
+    this.renderChart(resize, prevProps);
   }
 
   //Renders the chart, should be called every time the window is resized
-  renderChart = (resize) => {
+  renderChart = (resize, prevProps) => {
     this.updateDimensions();
     //Set dimensions of svg element and translations
     this.svg.attr("width", this.width + this.margin.left + this.margin.right)
@@ -138,7 +138,7 @@ class GaugeChart extends React.Component {
         .attr("d", this.arc)
         .style("fill", function(d) { return d.data.color; });
 
-    this.drawNeedle(resize);
+    this.drawNeedle(resize, prevProps);
     //Translate the needle starting point to the middle of the arc
     this.needle.attr("transform", "translate(" + this.outerRadius + ", " + this.outerRadius + ")");
   }
@@ -149,6 +149,7 @@ class GaugeChart extends React.Component {
     var divDimensions = this.container.node().getBoundingClientRect(),
         divWidth = divDimensions.width,
         divHeight = divDimensions.height;
+
     //Set the new width and horizontal margins
     this.margin.left = divWidth * marginInPercent;
     this.margin.right = divWidth * marginInPercent;
@@ -183,16 +184,17 @@ class GaugeChart extends React.Component {
     this.margin.left = this.width/2 - this.outerRadius + this.margin.right;
     this.g.attr("transform", "translate(" + this.margin.left + ", " + this.margin.top + ")");
   }
-  
+
   //If 'resize' is true then the animation does not play
-  drawNeedle = (resize) => {
+  drawNeedle = (resize, prevProps) => {
     const { percent, needleColor, needleBaseColor, hideText } = this.props;
     const { container, calculateRotation } = this;
     var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
         centerPoint = [0, -needleRadius/2];
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
-    var pathStr = this.calculateRotation(0);
+    const prevPercent = prevProps ? prevProps.percent : 0;
+    var pathStr = this.calculateRotation(prevPercent || percent);
     this.needle.append("path")
       .attr("d", pathStr)
       .attr("fill", needleColor);
@@ -212,8 +214,9 @@ class GaugeChart extends React.Component {
       .ease(d3.easeElastic)
       .duration(3000)
       .tween('progress', function(){
+        const currentPercent = d3.interpolateNumber(prevPercent, percent);
         return function(percentOfPercent){
-          var progress = percentOfPercent * percent;
+          const progress = currentPercent(percentOfPercent);
           return container.select(`.needle path`).attr("d", calculateRotation(progress));
         }
       });
@@ -279,7 +282,7 @@ class GaugeChart extends React.Component {
     return (
       <div id={this.props.id} style={{width: "100%"}} >
       </div>
-    )
+    );
   }
 }
 
