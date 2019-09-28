@@ -10,7 +10,6 @@ The radius of the gauge depends on the width and height of the container
 It will use whichever is smallest of width or height
 The svg element surrounding the gauge will always be square
 "container" is the div where the chart should be placed
-TODO: Lägg till info om 'data' i docs
 */
 
 //Constants
@@ -21,7 +20,6 @@ const endAngle = Math.PI / 2 //Positive x-axis
 const animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels']
 
 class GaugeChart extends React.Component {
-  //TODO: Change props to props
   constructor(props) {
     super(props)
     const { nrOfLevels, colors } = this.props
@@ -71,8 +69,6 @@ class GaugeChart extends React.Component {
 
   componentDidUpdate(prevProps) {
     //Initialize chart
-    //TODO: Maybe not call this here?
-
     // Always redraw the chart, but potentially do not animate it
     const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
     this.initChart(true, resize)
@@ -190,11 +186,11 @@ class GaugeChart extends React.Component {
   }
 
   //If 'resize' is true then the animation does not play
-  drawNeedle = resize => {
-    const { percent, needleColor, needleBaseColor, hideText } = this.props
-    const { container, calculateRotation } = this
-    var needleRadius = 15 * (this.width / 500), // Make the needle radius responsive
-      centerPoint = [0, -needleRadius / 2]
+  drawNeedle = (resize) => {
+    const { percent, needleColor, needleBaseColor, hideText, animate } = this.props;
+    const { container, calculateRotation } = this;
+    var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
+        centerPoint = [0, -needleRadius/2];
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
     var pathStr = this.calculateRotation(0)
@@ -213,20 +209,20 @@ class GaugeChart extends React.Component {
       this.addText(percent)
     }
     //Rotate the needle
-    if (!resize) {
-      this.needle
-        .transition()
-        .delay(500)
-        .ease(d3.easeElastic)
-        .duration(3000)
-        .tween('progress', function() {
-          return function(percentOfPercent) {
-            var progress = percentOfPercent * percent
-            return container.select(`.needle path`).attr('d', calculateRotation(progress))
-          }
-        })
-    } else {
-      container.select(`.needle path`).attr('d', calculateRotation(percent))
+    if(!resize && animate){
+      this.needle.transition()
+      .delay(500)
+      .ease(d3.easeElastic)
+      .duration(3000)
+      .tween('progress', function(){
+        return function(percentOfPercent){
+          var progress = percentOfPercent * percent;
+          return container.select(`.needle path`).attr("d", calculateRotation(progress));
+        }
+      });
+    }
+    else{
+      container.select(`.needle path`).attr("d", calculateRotation(percent));
     }
   }
 
@@ -305,9 +301,10 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
-  needleColor: '#464A4F',
-  needleBaseColor: '#464A4F',
-  hideText: false
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false,
+  animate: true
 }
 
 GaugeChart.propTypes = {
@@ -323,5 +320,6 @@ GaugeChart.propTypes = {
   textColor: PropTypes.string,
   needleColor: PropTypes.string,
   needleBaseColor: PropTypes.string,
-  hideText: PropTypes.bool
+  hideText: PropTypes.bool,
+  animate: PropTypes.bool
 }
