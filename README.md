@@ -64,6 +64,7 @@ The props for the chart:
 | needleColor     | PropTypes.string            | The color of the needle triangle                               | "#464A4F"              |
 | needleBaseColor | PropTypes.string            | The color of the circle at the base of the needle              | "#464A4F"              |
 | hideText        | PropTypes.bool              | Whether or not to hide the percentage display                  | false                  |
+| arcsLength      | PropTypes.array             | An array specifying the lenght of the each individual arc. If this prop is then the nrOfLevels prop will have no effect      | none                   |
 
 ##### Colors for the chart
 
