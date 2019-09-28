@@ -51,6 +51,16 @@ class App extends Component {
                 arcPadding={0.02}
               />
             </Col>
+            <Col xs={12} lg={6}>
+              <h6>GaugeChart without animation</h6>
+              <GaugeChart 
+                id="gauge-chart6" 
+                animate={false} 
+                nrOfLevels={15} 
+                percent={0.56} 
+                needleColor="#345243" 
+              />
+            </Col>
           </Row>
         </Container>
       </>

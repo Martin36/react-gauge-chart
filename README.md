@@ -38,6 +38,11 @@ Check the demo below for live examples of the charts
 <GaugeChart id="gauge-chart4" nrOfLevels={10} arcPadding={0.1} cornerRadius={3} percent={0.6} />
 ```
 
+#### Chart with disabled animation
+
+```jsx
+<GaugeChart id="gauge-chart5" animate={false} nrOfLevels={15} percent={0.56} needleColor="#345243" />
+```
 
 # Demo
 https://martin36.github.io/react-gauge-chart/
@@ -65,6 +70,7 @@ The props for the chart:
 | needleBaseColor | PropTypes.string            | The color of the circle at the base of the needle              | "#464A4F"              |
 | hideText        | PropTypes.bool              | Whether or not to hide the percentage display                  | false                  |
 | arcsLength      | PropTypes.array             | An array specifying the lenght of the each individual arc. If this prop is then the nrOfLevels prop will have no effect      | none                   |
+| animate         | PropTypes.bool              | Whether or not to animate the needle when loaded               | true                   |
 
 ##### Colors for the chart
 

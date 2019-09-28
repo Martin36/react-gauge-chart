@@ -181,7 +181,8 @@ function (_React$Component) {
           percent = _this$props.percent,
           needleColor = _this$props.needleColor,
           needleBaseColor = _this$props.needleBaseColor,
-          hideText = _this$props.hideText;
+          hideText = _this$props.hideText,
+          animate = _this$props.animate;
 
       var _assertThisInitialize = _assertThisInitialized(_this),
           container = _assertThisInitialize.container,
@@ -204,7 +205,7 @@ function (_React$Component) {
       } //Rotate the needle
 
 
-      if (!resize) {
+      if (!resize && animate) {
         _this.needle.transition().delay(500).ease(d3.easeElastic).duration(3000).tween('progress', function () {
           return function (percentOfPercent) {
             var progress = percentOfPercent * percent;
@@ -355,7 +356,8 @@ GaugeChart.defaultProps = {
   textColor: '#fff',
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
-  hideText: false
+  hideText: false,
+  animate: true
 };
 GaugeChart.propTypes = {
   id: _propTypes.default.string.isRequired,
@@ -369,5 +371,6 @@ GaugeChart.propTypes = {
   textColor: _propTypes.default.string,
   needleColor: _propTypes.default.string,
   needleBaseColor: _propTypes.default.string,
-  hideText: _propTypes.default.bool
+  hideText: _propTypes.default.bool,
+  animate: _propTypes.default.bool
 };
