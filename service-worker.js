@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/react-gauge-chart/precache-manifest.80e9cc5685c0d58f60dd981d0956bf12.js"
+  "/react-gauge-chart/precache-manifest.d7ceab0ad727b004067af5b0d3a16b75.js"
 );
 
 workbox.clientsClaim();
