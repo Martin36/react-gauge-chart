@@ -4,6 +4,16 @@ import './App.css'
 import GaugeChart from './lib'
 
 class App extends Component {
+
+  state = { updatingPercentage: 0};
+
+  componentDidMount() {
+    const n = 3;
+    setInterval(() => {   
+      this.setState({ updatingPercentage: parseFloat(Math.random().toFixed(2)) });
+    }, n*1000);
+  }
+
   render() {
     return (
       <>
@@ -59,6 +69,15 @@ class App extends Component {
                 nrOfLevels={15} 
                 percent={0.56} 
                 needleColor="#345243" 
+              />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} lg={6}>
+              <h6>GaugeChart with updating percentage value every 3rd second</h6>
+              <GaugeChart
+                id="gauge-chart7"
+                percent={this.state.updatingPercentage}
               />
             </Col>
           </Row>
