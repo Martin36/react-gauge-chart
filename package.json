@@ -1,6 +1,6 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -27,6 +27,7 @@
     "start": "react-scripts start",
     "prebuild": "rimraf dist",
     "build": "NODE_ENV=production babel src/lib --out-dir dist --copy-files",
+    "build-page": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",

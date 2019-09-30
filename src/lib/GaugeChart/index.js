@@ -1,5 +1,6 @@
 import React from 'react'
-import * as d3 from 'd3'
+import { arc, pie, select, easeElastic, 
+  scaleLinear, interpolateHsl } from 'd3'
 import PropTypes from 'prop-types'
 
 import './style.css'
@@ -33,8 +34,8 @@ class GaugeChart extends React.Component {
     this.data = {}
     this.outerRadius = {}
     this.margin = {} // = {top: 20, right: 50, bottom: 50, left: 50},
-    this.arc = d3.arc()
-    this.pie = d3.pie()
+    this.arc = arc()
+    this.pie = pie()
 
     // We have to make a decision about number of arcs to display
     // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
@@ -61,7 +62,7 @@ class GaugeChart extends React.Component {
 
   componentDidMount() {
     if (this.props.id) {
-      this.container = d3.select(`#${this.props.id}`)
+      this.container = select(`#${this.props.id}`)
       //Initialize chart
       this.initChart()
     }
@@ -212,7 +213,7 @@ class GaugeChart extends React.Component {
     if(!resize && animate){
       this.needle.transition()
       .delay(500)
-      .ease(d3.easeElastic)
+      .ease(easeElastic)
       .duration(3000)
       .tween('progress', function(){
         return function(percentOfPercent){
@@ -255,11 +256,10 @@ class GaugeChart extends React.Component {
   //This function returns the same number of colors
   getColors = () => {
     const { colors } = this.props
-    var colorScale = d3
-      .scaleLinear()
+    var colorScale = scaleLinear()
       .domain([1, this.nbArcsToDisplay])
       .range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
-      .interpolate(d3.interpolateHsl)
+      .interpolate(interpolateHsl)
     var colorArray = []
     for (var i = 1; i <= this.nbArcsToDisplay; i++) {
       colorArray.push(colorScale(i))
