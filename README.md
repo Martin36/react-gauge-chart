@@ -53,6 +53,8 @@ The props for the chart:
 | Name            | PropType                    | Description                                                    | Default value          |
 |-----------------|-----------------------------|----------------------------------------------------------------|------------------------|
 | id              | PropTypes.string.isRequired | Used for the identification of the div surrounding the chart   |                        |
+| className       | PropTypes.string            | Add `className` to the div container                           |                        |
+| style           | PropTypes.object            | Add `style` to the div container                               | { width: '100%' }      |
 | marginInPercent | PropTypes.number            | Margin for the chart inside the containing SVG element         | 0.05                   |
 | cornerRadius    | PropTypes.number            | Corner radius for the elements in the chart                    | 6                      |
 | nrOfLevels      | PropTypes.number            | The number of elements displayed in the arc                    | 3                      |
@@ -72,4 +74,3 @@ each arc would a color in the array (colors are assigned from left to right). If
 must match the **number of levels** in the arc.
 If the number of colors does not match the number of levels, then the **first** and the **last** color from the colors array will
 be selected and the arcs will get colors that are interpolated between those. The interpolation is done using [d3.interpolateHsl](https://github.com/d3/d3-interpolate#interpolateHsl).
-

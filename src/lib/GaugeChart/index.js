@@ -17,6 +17,10 @@ TODO: Lägg till info om 'data' i docs
 const startAngle = -Math.PI/2;  //Negative x-axis
 const endAngle = Math.PI/2;     //Positive x-axis
 
+const defaultStyle = {
+  width: '100%',
+};
+
 // Props that should cause an animation on update
 const animateNeedleProps = [
   'marginInPercent',
@@ -279,16 +283,15 @@ class GaugeChart extends React.Component {
   }
 
   render() {
-    return (
-      <div id={this.props.id} style={{width: "100%"}} >
-      </div>
-    );
+    const { id, style, className } = this.props;
+    return <div id={id} className={className} style={style} />;
   }
 }
 
 export default GaugeChart;
 
 GaugeChart.defaultProps = {
+  style: defaultStyle,
   marginInPercent: 0.05,
   cornerRadius: 6,
   nrOfLevels: 3,
@@ -304,6 +307,8 @@ GaugeChart.defaultProps = {
 
 GaugeChart.propTypes = {
   id: PropTypes.string.isRequired,
+  className: PropTypes.string,
+  style: PropTypes.object,
   marginInPercent: PropTypes.number,
   cornerRadius: PropTypes.number,
   nrOfLevels: PropTypes.number,
