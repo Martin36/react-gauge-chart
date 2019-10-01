@@ -70,6 +70,7 @@ typings/
 /coverage
 
 # production
+build/
 /build
 
 # misc
