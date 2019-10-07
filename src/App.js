@@ -4,6 +4,21 @@ import './App.css'
 import GaugeChart from './lib'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      arcs: [0.5, 0.3, 0.2]
+    }
+    setInterval(() => {
+      const arcs = []
+      arcs.push(Math.random().toFixed(1))
+      arcs.push(Math.random().toFixed(1))
+      arcs.push(Math.random().toFixed(1))
+      this.setState({
+        arcs
+      })
+    }, 5000)
+  }
   render() {
     return (
       <>
@@ -53,12 +68,19 @@ class App extends Component {
             </Col>
             <Col xs={12} lg={6}>
               <h6>GaugeChart without animation</h6>
-              <GaugeChart 
-                id="gauge-chart6" 
-                animate={false} 
-                nrOfLevels={15} 
-                percent={0.56} 
-                needleColor="#345243" 
+              <GaugeChart id="gauge-chart6" animate={false} nrOfLevels={15} percent={0.56} needleColor="#345243" />
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} lg={6}>
+              <h6>GaugeChart with custom arcs width (update)</h6>
+              <GaugeChart
+                id="gauge-chart7"
+                nrOfLevels={420}
+                arcsLength={this.state.arcs}
+                colors={['#5BE12C', '#F5CD19', '#EA4228']}
+                percent={0.37}
+                arcPadding={0.02}
               />
             </Col>
           </Row>
