@@ -1,6 +1,5 @@
 import React from 'react'
-import { arc, pie, select, easeElastic, 
-  scaleLinear, interpolateHsl } from 'd3'
+import { arc, pie, select, easeElastic, scaleLinear, interpolateHsl } from 'd3'
 import PropTypes from 'prop-types'
 
 import './style.css'
@@ -23,7 +22,6 @@ const animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLev
 class GaugeChart extends React.Component {
   constructor(props) {
     super(props)
-    const { nrOfLevels, colors } = this.props
     //Class variables
     this.svg = {}
     this.g = {}
@@ -37,14 +35,44 @@ class GaugeChart extends React.Component {
     this.arc = arc()
     this.pie = pie()
 
+    this.setArcData()
+  }
+
+  componentDidMount() {
+    if (this.props.id) {
+      this.container = select(`#${this.props.id}`)
+      //Initialize chart
+      this.initChart()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { nrOfLevels, arcsLength, colors } = this.props
+    // Only update when nrOfLevels or arcsLength or colors are changed
+    if (
+      (nrOfLevels && prevProps.nrOfLevels && prevProps.nrOfLevels !== nrOfLevels) ||
+      (arcsLength && prevProps.arcsLength && prevProps.arcsLength.every(a => arcsLength.includes(a))) ||
+      (colors && prevProps.colors && prevProps.colors.every(a => colors.includes(a)))
+    ) {
+      this.setArcData()
+    }
+    //Initialize chart
+    // Always redraw the chart, but potentially do not animate it
+    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
+    this.initChart(true, resize)
+  }
+
+  // This function update arc's datas when component is mounting or when one of arc's props is updated
+  setArcData() {
+    const { props } = this
     // We have to make a decision about number of arcs to display
     // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
-    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : nrOfLevels
+    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : props.nrOfLevels
 
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
-    if (this.nbArcsToDisplay === colors.length) {
-      this.colorArray = colors
+    if (this.nbArcsToDisplay === props.colors.length) {
+      this.colorArray = props.colors
     } else {
       this.colorArray = this.getColors()
     }
@@ -58,21 +86,6 @@ class GaugeChart extends React.Component {
       }
       this.arcData.push(arcDatum)
     }
-  }
-
-  componentDidMount() {
-    if (this.props.id) {
-      this.container = select(`#${this.props.id}`)
-      //Initialize chart
-      this.initChart()
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    //Initialize chart
-    // Always redraw the chart, but potentially do not animate it
-    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
-    this.initChart(true, resize)
   }
 
   initChart = (update, resize = false) => {
@@ -187,11 +200,11 @@ class GaugeChart extends React.Component {
   }
 
   //If 'resize' is true then the animation does not play
-  drawNeedle = (resize) => {
-    const { percent, needleColor, needleBaseColor, hideText, animate } = this.props;
-    const { container, calculateRotation } = this;
-    var needleRadius = 15*(this.width / 500) ,   // Make the needle radius responsive
-        centerPoint = [0, -needleRadius/2];
+  drawNeedle = resize => {
+    const { percent, needleColor, needleBaseColor, hideText, animate } = this.props
+    const { container, calculateRotation } = this
+    var needleRadius = 15 * (this.width / 500), // Make the needle radius responsive
+      centerPoint = [0, -needleRadius / 2]
     //Draw the triangle
     //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
     var pathStr = this.calculateRotation(0)
@@ -210,20 +223,20 @@ class GaugeChart extends React.Component {
       this.addText(percent)
     }
     //Rotate the needle
-    if(!resize && animate){
-      this.needle.transition()
-      .delay(500)
-      .ease(easeElastic)
-      .duration(3000)
-      .tween('progress', function(){
-        return function(percentOfPercent){
-          var progress = percentOfPercent * percent;
-          return container.select(`.needle path`).attr("d", calculateRotation(progress));
-        }
-      });
-    }
-    else{
-      container.select(`.needle path`).attr("d", calculateRotation(percent));
+    if (!resize && animate) {
+      this.needle
+        .transition()
+        .delay(500)
+        .ease(easeElastic)
+        .duration(3000)
+        .tween('progress', function() {
+          return function(percentOfPercent) {
+            var progress = percentOfPercent * percent
+            return container.select(`.needle path`).attr('d', calculateRotation(progress))
+          }
+        })
+    } else {
+      container.select(`.needle path`).attr('d', calculateRotation(percent))
     }
   }
 
@@ -301,8 +314,8 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
+  needleColor: '#464A4F',
+  needleBaseColor: '#464A4F',
   hideText: false,
   animate: true
 }
