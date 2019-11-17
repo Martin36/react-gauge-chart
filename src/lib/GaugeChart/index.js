@@ -22,9 +22,16 @@ const defaultStyle = {
 };
 
 // Props that should cause an animation on update
-const animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels']
+const animateNeedleProps = [
+  'marginInPercent',
+  'arcPadding',
+  'percent',
+  'nrOfLevels',
+  'animDelay',
+];
 
 class GaugeChart extends React.Component {
+  //TODO: Change props to props
   constructor(props) {
     super(props)
     const { nrOfLevels, colors } = this.props
@@ -85,11 +92,12 @@ class GaugeChart extends React.Component {
       return;
     }
 
-    this.svg = this.container.append('svg');
-    this.g = this.svg.append('g'); //Used for margins
-    this.doughnut = this.g.append('g').attr('class', 'doughnut');
+    this.svg = this.container.append("svg");
+    this.g = this.svg.append("g")   //Used for margins
+    this.doughnut = this.g.append("g")
+      .attr("class", "doughnut");
 
-    //Set up the pie generator
+      //Set up the pie generator
     //Each arc should be of equal length (or should they?)
     this.pie
       .value(function(d) {
@@ -217,7 +225,7 @@ class GaugeChart extends React.Component {
     //Rotate the needle
     if(!resize && animate){
       this.needle.transition()
-      .delay(500)
+      .delay(this.props.animDelay)
       .ease(easeElastic)
       .duration(3000)
       .tween('progress', function(){
@@ -312,7 +320,8 @@ GaugeChart.defaultProps = {
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
   hideText: false,
-  animate: true
+  animate: true,
+  animDelay: 500,
 }
 
 GaugeChart.propTypes = {

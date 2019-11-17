@@ -9,7 +9,7 @@ const App = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setCurrentPercent(Math.random());
-		}, Math.random() * 3000);
+		}, 3000);
 
 		return () => {
 			clearTimeout(timer);
@@ -100,6 +100,7 @@ const App = () => {
 							id="gauge-chart7"
 							style={chartStyle}
               percent={currentPercent}
+              animDelay={0}
             />
           </Col>
           <Col xs={12} lg={6} />
