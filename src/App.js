@@ -4,11 +4,19 @@ import './App.css'
 import GaugeChart from './lib'
 
 const App = () => {
-	const [currentPercent, setCurrentPercent] = useState();
+  const [currentPercent, setCurrentPercent] = useState();
+  const [currentArcs, setCurrentArcs] = useState();
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			setCurrentPercent(Math.random());
+      setCurrentPercent(Math.random());
+      
+      const arcs = []
+      arcs.push(Math.random().toFixed(1))
+      arcs.push(Math.random().toFixed(1))
+      arcs.push(Math.random().toFixed(1))
+      setCurrentArcs(arcs);
+
 		}, 3000);
 
 		return () => {
@@ -103,7 +111,17 @@ const App = () => {
               animDelay={0}
             />
           </Col>
-          <Col xs={12} lg={6} />
+          <Col xs={12} lg={6}>
+            <h6>GaugeChart with custom arcs width (update)</h6>
+            <GaugeChart
+              id="gauge-chart8"
+              nrOfLevels={420}
+              arcsLength={currentArcs}
+              colors={['#5BE12C', '#F5CD19', '#EA4228']}
+              percent={0.37}
+              arcPadding={0.02}
+            />
+          </Col>
         </Row>
       </Container>
     </>

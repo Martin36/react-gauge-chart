@@ -34,7 +34,6 @@ class GaugeChart extends React.Component {
   //TODO: Change props to props
   constructor(props) {
     super(props)
-    const { nrOfLevels, colors } = this.props
     //Class variables
     this.svg = {}
     this.g = {}
@@ -48,14 +47,44 @@ class GaugeChart extends React.Component {
     this.arc = arc()
     this.pie = pie()
 
+    this.setArcData()
+  }
+
+  componentDidMount() {
+    if (this.props.id) {
+      this.container = select(`#${this.props.id}`)
+      //Initialize chart
+      this.initChart()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { nrOfLevels, arcsLength, colors } = this.props
+    // Only update when nrOfLevels or arcsLength or colors are changed
+    if (
+      (nrOfLevels && prevProps.nrOfLevels && prevProps.nrOfLevels !== nrOfLevels) ||
+      (arcsLength && prevProps.arcsLength && prevProps.arcsLength.every(a => arcsLength.includes(a))) ||
+      (colors && prevProps.colors && prevProps.colors.every(a => colors.includes(a)))
+    ) {
+      this.setArcData()
+    }
+    //Initialize chart
+    // Always redraw the chart, but potentially do not animate it
+    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
+    this.initChart(true, resize)
+  }
+
+  // This function update arc's datas when component is mounting or when one of arc's props is updated
+  setArcData() {
+    const { props } = this
     // We have to make a decision about number of arcs to display
     // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
-    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : nrOfLevels
+    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : props.nrOfLevels
 
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
-    if (this.nbArcsToDisplay === colors.length) {
-      this.colorArray = colors
+    if (this.nbArcsToDisplay === props.colors.length) {
+      this.colorArray = props.colors
     } else {
       this.colorArray = this.getColors()
     }
@@ -317,8 +346,8 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
+  needleColor: '#464A4F',
+  needleBaseColor: '#464A4F',
   hideText: false,
   animate: true,
   animDelay: 500,
