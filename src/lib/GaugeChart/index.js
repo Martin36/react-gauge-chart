@@ -1,6 +1,6 @@
 import React from 'react'
 import { arc, pie, select, easeElastic, 
-  scaleLinear, interpolateHsl } from 'd3'
+  scaleLinear, interpolateHsl, interpolateNumber } from 'd3'
 import PropTypes from 'prop-types'
 
 import './style.css'
@@ -221,7 +221,7 @@ class GaugeChart extends React.Component {
       .ease(easeElastic)
       .duration(3000)
       .tween('progress', function(){
-        const currentPercent = d3.interpolateNumber(prevPercent, percent);
+        const currentPercent = interpolateNumber(prevPercent, percent);
         return function(percentOfPercent){
           const progress = currentPercent(percentOfPercent);
           return container.select(`.needle path`).attr("d", calculateRotation(progress));
