@@ -7,15 +7,11 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
-var d3 = _interopRequireWildcard(require("d3"));
+var _d = require("d3");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
 require("./style.css");
-
-function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -51,15 +47,19 @@ The svg element surrounding the gauge will always be square
 var startAngle = -Math.PI / 2; //Negative x-axis
 
 var endAngle = Math.PI / 2; //Positive x-axis
-// Props that should cause an animation on update
 
-var animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels'];
+var defaultStyle = {
+  width: '100%'
+}; // Props that should cause an animation on update
+
+var animateNeedleProps = ['marginInPercent', 'arcPadding', 'percent', 'nrOfLevels', 'animDelay'];
 
 var GaugeChart =
 /*#__PURE__*/
 function (_React$Component) {
   _inherits(GaugeChart, _React$Component);
 
+  //TODO: Change props to props
   function GaugeChart(props) {
     var _this;
 
@@ -69,17 +69,18 @@ function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "initChart", function (update) {
       var resize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+      var prevProps = arguments.length > 2 ? arguments[2] : undefined;
 
       if (update) {
-        _this.renderChart(resize);
+        _this.renderChart(resize, prevProps);
 
         return;
       }
 
-      _this.svg = _this.container.append('svg');
-      _this.g = _this.svg.append('g'); //Used for margins
+      _this.svg = _this.container.append("svg");
+      _this.g = _this.svg.append("g"); //Used for margins
 
-      _this.doughnut = _this.g.append('g').attr('class', 'doughnut'); //Set up the pie generator
+      _this.doughnut = _this.g.append("g").attr("class", "doughnut"); //Set up the pie generator
       //Each arc should be of equal length (or should they?)
 
       _this.pie.value(function (d) {
@@ -93,13 +94,13 @@ function (_React$Component) {
       window.addEventListener('resize', function () {
         var resize = true;
 
-        _this.renderChart(resize);
+        _this.renderChart(resize, prevProps);
       });
 
-      _this.renderChart(resize);
+      _this.renderChart(resize, prevProps);
     });
 
-    _defineProperty(_assertThisInitialized(_this), "renderChart", function (resize) {
+    _defineProperty(_assertThisInitialized(_this), "renderChart", function (resize, prevProps) {
       _this.updateDimensions(); //Set dimensions of svg element and translations
 
 
@@ -130,7 +131,7 @@ function (_React$Component) {
         return d.data.color;
       });
 
-      _this.drawNeedle(resize); //Translate the needle starting point to the middle of the arc
+      _this.drawNeedle(resize, prevProps); //Translate the needle starting point to the middle of the arc
 
 
       _this.needle.attr('transform', 'translate(' + _this.outerRadius + ', ' + _this.outerRadius + ')');
@@ -176,7 +177,7 @@ function (_React$Component) {
       _this.g.attr('transform', 'translate(' + _this.margin.left + ', ' + _this.margin.top + ')');
     });
 
-    _defineProperty(_assertThisInitialized(_this), "drawNeedle", function (resize) {
+    _defineProperty(_assertThisInitialized(_this), "drawNeedle", function (resize, prevProps) {
       var _this$props = _this.props,
           percent = _this$props.percent,
           needleColor = _this$props.needleColor,
@@ -193,9 +194,11 @@ function (_React$Component) {
       centerPoint = [0, -needleRadius / 2]; //Draw the triangle
       //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
 
-      var pathStr = _this.calculateRotation(0);
+      var prevPercent = prevProps ? prevProps.percent : 0;
 
-      _this.needle.append('path').attr('d', pathStr).attr('fill', needleColor); //Add a circle at the bottom of needle
+      var pathStr = _this.calculateRotation(prevPercent || percent);
+
+      _this.needle.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
 
 
       _this.needle.append('circle').attr('cx', centerPoint[0]).attr('cy', centerPoint[1]).attr('r', needleRadius).attr('fill', needleBaseColor);
@@ -206,9 +209,10 @@ function (_React$Component) {
 
 
       if (!resize && animate) {
-        _this.needle.transition().delay(500).ease(d3.easeElastic).duration(3000).tween('progress', function () {
+        _this.needle.transition().delay(_this.props.animDelay).ease(_d.easeElastic).duration(3000).tween('progress', function () {
+          var currentPercent = (0, _d.interpolateNumber)(prevPercent, percent);
           return function (percentOfPercent) {
-            var progress = percentOfPercent * percent;
+            var progress = currentPercent(percentOfPercent);
             return container.select(".needle path").attr("d", calculateRotation(progress));
           };
         });
@@ -237,8 +241,8 @@ function (_React$Component) {
 
     _defineProperty(_assertThisInitialized(_this), "getColors", function () {
       var colors = _this.props.colors;
-      var colorScale = d3.scaleLinear().domain([1, _this.nbArcsToDisplay]).range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
-      .interpolate(d3.interpolateHsl);
+      var colorScale = (0, _d.scaleLinear)().domain([1, _this.nbArcsToDisplay]).range([colors[0], colors[colors.length - 1]]) //Use the first and the last color as range
+      .interpolate(_d.interpolateHsl);
       var colorArray = [];
 
       for (var i = 1; i <= _this.nbArcsToDisplay; i++) {
@@ -275,8 +279,8 @@ function (_React$Component) {
     _this.outerRadius = {};
     _this.margin = {}; // = {top: 20, right: 50, bottom: 50, left: 50},
 
-    _this.arc = d3.arc();
-    _this.pie = d3.pie(); // We have to make a decision about number of arcs to display
+    _this.arc = (0, _d.arc)();
+    _this.pie = (0, _d.pie)(); // We have to make a decision about number of arcs to display
     // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
 
     _this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : nrOfLevels; //Check if the number of colors equals the number of levels
@@ -308,7 +312,7 @@ function (_React$Component) {
     key: "componentDidMount",
     value: function componentDidMount() {
       if (this.props.id) {
-        this.container = d3.select("#".concat(this.props.id)); //Initialize chart
+        this.container = (0, _d.select)("#".concat(this.props.id)); //Initialize chart
 
         this.initChart();
       }
@@ -323,16 +327,19 @@ function (_React$Component) {
       var resize = !animateNeedleProps.some(function (key) {
         return prevProps[key] !== _this2.props[key];
       });
-      this.initChart(true, resize);
+      this.initChart(true, resize, prevProps);
     }
   }, {
     key: "render",
     value: function render() {
+      var _this$props3 = this.props,
+          id = _this$props3.id,
+          style = _this$props3.style,
+          className = _this$props3.className;
       return _react.default.createElement("div", {
-        id: this.props.id,
-        style: {
-          width: '100%'
-        }
+        id: id,
+        className: className,
+        style: style
       });
     }
   }]);
@@ -343,6 +350,7 @@ function (_React$Component) {
 var _default = GaugeChart;
 exports.default = _default;
 GaugeChart.defaultProps = {
+  style: defaultStyle,
   marginInPercent: 0.05,
   cornerRadius: 6,
   nrOfLevels: 3,
@@ -357,10 +365,13 @@ GaugeChart.defaultProps = {
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
   hideText: false,
-  animate: true
+  animate: true,
+  animDelay: 500
 };
 GaugeChart.propTypes = {
   id: _propTypes.default.string.isRequired,
+  className: _propTypes.default.string,
+  style: _propTypes.default.object,
   marginInPercent: _propTypes.default.number,
   cornerRadius: _propTypes.default.number,
   nrOfLevels: _propTypes.default.number,
