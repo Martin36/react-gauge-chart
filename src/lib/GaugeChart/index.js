@@ -309,7 +309,8 @@ GaugeChart.defaultProps = {
   needleColor: "#464A4F",
   needleBaseColor: "#464A4F",
   hideText: false,
-  animate: true
+  animate: true,
+  formatTextValue: null
 }
 
 GaugeChart.propTypes = {
