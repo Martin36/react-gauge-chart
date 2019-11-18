@@ -61,6 +61,17 @@ class App extends Component {
                 needleColor="#345243" 
               />
             </Col>
+            <Col xs={12} lg={6}>
+              <h6>GaugeChart with formatted text</h6>
+              <GaugeChart
+                id="gauge-chart7"
+                nrOfLevels={30}
+                colors={['#5BE12C', '#F5CD19', '#EA4228']}
+                arcWidth={0.3}
+                percent={0.37}
+                formatTextValue={value => value + 'kbit/s'}
+              />
+            </Col>
           </Row>
         </Container>
       </>
