@@ -283,14 +283,19 @@ class GaugeChart extends React.Component {
 
   //Adds text undeneath the graft to display which percentage is the current one
   addText = percentage => {
+    const { formatTextValue } = this.props
     var textPadding = 20
+    const text = formatTextValue
+      ? formatTextValue(this.floatingNumber(percentage))
+      : this.floatingNumber(percentage) + '%'
     this.g
       .append('g')
       .attr('class', 'text-group')
       .attr('transform', `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append('text')
-      .text(`${this.floatingNumber(percentage)}%`)
-      .style('font-size', () => `${this.width / 10}px`)
+      .text(text)
+      // this computation avoid text overflow. When formatted value is over 10 characters, we should reduce font size
+      .style('font-size', () => `${this.width / 11 / (text.length > 10 ? text.length / 10 : 1)}px`)
       .style('fill', this.props.textColor)
       .attr('class', 'percent-text')
   }
@@ -322,6 +327,7 @@ GaugeChart.defaultProps = {
   hideText: false,
   animate: true,
   animDelay: 500,
+  formatTextValue: null
 }
 
 GaugeChart.propTypes = {
@@ -340,5 +346,6 @@ GaugeChart.propTypes = {
   needleColor: PropTypes.string,
   needleBaseColor: PropTypes.string,
   hideText: PropTypes.bool,
-  animate: PropTypes.bool
+  animate: PropTypes.bool,
+  formatTextValue: PropTypes.func
 }
