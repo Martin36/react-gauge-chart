@@ -70,7 +70,7 @@ class GaugeChart extends React.Component {
     //Initialize chart
     // Always redraw the chart, but potentially do not animate it
     const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
-    this.initChart(true, resize)
+    this.initChart(true, resize, prevProps)
   }
 
   // This function update arc's datas when component is mounting or when one of arc's props is updated
