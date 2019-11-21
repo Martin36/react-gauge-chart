@@ -83,6 +83,17 @@ https://martin36.github.io/react-gauge-chart/
 
 ### Warning: Do not use the same `id` for multiple charts, as it will put multiple charts in the same container
 
+#### Note: If you do any updates to the props of the chart, it will rerender with a different size (it's a bug). To prevent this set a fixed height for the chart e.g
+
+```jsx
+const chartStyle = {
+  height: 250,
+}
+
+<GaugeChart id="gauge-chart1" style={chartStyle} />
+
+```
+
 The props for the chart:
 
 | Name            | PropType                    | Description                                                    | Default value          |
