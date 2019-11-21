@@ -1,13 +1,13 @@
 {
   "main.css": "/react-gauge-chart/static/css/main.645beec3.chunk.css",
-  "main.js": "/react-gauge-chart/static/js/main.2e70a6fe.chunk.js",
-  "main.js.map": "/react-gauge-chart/static/js/main.2e70a6fe.chunk.js.map",
+  "main.js": "/react-gauge-chart/static/js/main.06babc9d.chunk.js",
+  "main.js.map": "/react-gauge-chart/static/js/main.06babc9d.chunk.js.map",
   "runtime~main.js": "/react-gauge-chart/static/js/runtime~main.bc6e3f6b.js",
   "runtime~main.js.map": "/react-gauge-chart/static/js/runtime~main.bc6e3f6b.js.map",
-  "static/js/2.5cfe4e45.chunk.js": "/react-gauge-chart/static/js/2.5cfe4e45.chunk.js",
-  "static/js/2.5cfe4e45.chunk.js.map": "/react-gauge-chart/static/js/2.5cfe4e45.chunk.js.map",
+  "static/js/2.c885d279.chunk.js": "/react-gauge-chart/static/js/2.c885d279.chunk.js",
+  "static/js/2.c885d279.chunk.js.map": "/react-gauge-chart/static/js/2.c885d279.chunk.js.map",
   "index.html": "/react-gauge-chart/index.html",
-  "precache-manifest.d7ceab0ad727b004067af5b0d3a16b75.js": "/react-gauge-chart/precache-manifest.d7ceab0ad727b004067af5b0d3a16b75.js",
+  "precache-manifest.71422a33dbf82da8b0cd4b88dbbebc96.js": "/react-gauge-chart/precache-manifest.71422a33dbf82da8b0cd4b88dbbebc96.js",
   "service-worker.js": "/react-gauge-chart/service-worker.js",
   "static/css/main.645beec3.chunk.css.map": "/react-gauge-chart/static/css/main.645beec3.chunk.css.map"
 }
