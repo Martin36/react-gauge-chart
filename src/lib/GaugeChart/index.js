@@ -1,6 +1,5 @@
 import React from 'react'
-import { arc, pie, select, easeElastic, 
-  scaleLinear, interpolateHsl, interpolateNumber } from 'd3'
+import { arc, pie, select, easeElastic, scaleLinear, interpolateHsl, interpolateNumber } from 'd3'
 import PropTypes from 'prop-types'
 
 import './style.css'
@@ -34,7 +33,6 @@ class GaugeChart extends React.Component {
   //TODO: Change props to props
   constructor(props) {
     super(props)
-    const { nrOfLevels, colors } = this.props
     //Class variables
     this.svg = {}
     this.g = {}
@@ -48,14 +46,44 @@ class GaugeChart extends React.Component {
     this.arc = arc()
     this.pie = pie()
 
+    this.setArcData()
+  }
+
+  componentDidMount() {
+    if (this.props.id) {
+      this.container = select(`#${this.props.id}`)
+      //Initialize chart
+      this.initChart()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { nrOfLevels, arcsLength, colors } = this.props
+    // Only update when nrOfLevels or arcsLength or colors are changed
+    if (
+      (nrOfLevels && prevProps.nrOfLevels && prevProps.nrOfLevels !== nrOfLevels) ||
+      (arcsLength && prevProps.arcsLength && prevProps.arcsLength.every(a => arcsLength.includes(a))) ||
+      (colors && prevProps.colors && prevProps.colors.every(a => colors.includes(a)))
+    ) {
+      this.setArcData()
+    }
+    //Initialize chart
+    // Always redraw the chart, but potentially do not animate it
+    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
+    this.initChart(true, resize, prevProps)
+  }
+
+  // This function update arc's datas when component is mounting or when one of arc's props is updated
+  setArcData() {
+    const { props } = this
     // We have to make a decision about number of arcs to display
     // If arcsLength is setted, we choose arcsLength length instead of nrOfLevels
-    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : nrOfLevels
+    this.nbArcsToDisplay = props.arcsLength ? props.arcsLength.length : props.nrOfLevels
 
     //Check if the number of colors equals the number of levels
     //Otherwise make an interpolation
-    if (this.nbArcsToDisplay === colors.length) {
-      this.colorArray = colors
+    if (this.nbArcsToDisplay === props.colors.length) {
+      this.colorArray = props.colors
     } else {
       this.colorArray = this.getColors()
     }
@@ -69,21 +97,6 @@ class GaugeChart extends React.Component {
       }
       this.arcData.push(arcDatum)
     }
-  }
-
-  componentDidMount() {
-    if (this.props.id) {
-      this.container = select(`#${this.props.id}`)
-      //Initialize chart
-      this.initChart();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    //Initialize chart
-    // Always redraw the chart, but potentially do not animate it
-    const resize = !animateNeedleProps.some(key => prevProps[key] !== this.props[key])
-    this.initChart(true, resize, prevProps)
   }
 
   initChart = (update, resize = false, prevProps) => {
@@ -283,14 +296,19 @@ class GaugeChart extends React.Component {
 
   //Adds text undeneath the graft to display which percentage is the current one
   addText = percentage => {
+    const { formatTextValue } = this.props
     var textPadding = 20
+    const text = formatTextValue
+      ? formatTextValue(this.floatingNumber(percentage))
+      : this.floatingNumber(percentage) + '%'
     this.g
       .append('g')
       .attr('class', 'text-group')
       .attr('transform', `translate(${this.outerRadius}, ${this.outerRadius / 2 + textPadding})`)
       .append('text')
-      .text(`${this.floatingNumber(percentage)}%`)
-      .style('font-size', () => `${this.width / 10}px`)
+      .text(text)
+      // this computation avoid text overflow. When formatted value is over 10 characters, we should reduce font size
+      .style('font-size', () => `${this.width / 11 / (text.length > 10 ? text.length / 10 : 1)}px`)
       .style('fill', this.props.textColor)
       .attr('class', 'percent-text')
   }
@@ -317,11 +335,12 @@ GaugeChart.defaultProps = {
   arcWidth: 0.2, //The width of the arc given in percent of the radius
   colors: ['#00FF00', '#FF0000'], //Default defined colors
   textColor: '#fff',
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
+  needleColor: '#464A4F',
+  needleBaseColor: '#464A4F',
   hideText: false,
   animate: true,
   animDelay: 500,
+  formatTextValue: null
 }
 
 GaugeChart.propTypes = {
@@ -340,5 +359,6 @@ GaugeChart.propTypes = {
   needleColor: PropTypes.string,
   needleBaseColor: PropTypes.string,
   hideText: PropTypes.bool,
-  animate: PropTypes.bool
+  animate: PropTypes.bool,
+  formatTextValue: PropTypes.func
 }
