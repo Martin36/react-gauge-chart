@@ -1,6 +1,6 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -30,7 +30,7 @@
     "build-page": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build-page",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
