@@ -42,7 +42,8 @@ const App = () => {
 							style={chartStyle}
 							nrOfLevels={20}
 							percent={0.86}
-							needleColor="#345243"
+              needleColor="#345243"
+              fontSize="12px"
 						/>
           </Col>
         </Row>

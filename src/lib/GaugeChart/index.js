@@ -121,7 +121,8 @@ GaugeChart.defaultProps = {
   hideText: false,
   animate: true,
   animDelay: 500,
-  formatTextValue: null
+  formatTextValue: null,
+  fontSize: null
 }
 
 GaugeChart.propTypes = {
@@ -141,7 +142,8 @@ GaugeChart.propTypes = {
   needleBaseColor: PropTypes.string,
   hideText: PropTypes.bool,
   animate: PropTypes.bool,
-  formatTextValue: PropTypes.func
+  formatTextValue: PropTypes.func,
+  fontSize: PropTypes.string
 }
 
  // This function update arc's datas when component is mounting or when one of arc's props is updated
@@ -293,7 +295,7 @@ const percentToRad = percent => {
 
 //Adds text undeneath the graft to display which percentage is the current one
 const addText = (percentage, props, outerRadius, width, g) => {
-  const { formatTextValue } = props
+  const { formatTextValue, fontSize } = props
   var textPadding = 20
   const text = formatTextValue
     ? formatTextValue(floatingNumber(percentage))
@@ -305,7 +307,7 @@ const addText = (percentage, props, outerRadius, width, g) => {
     .append('text')
     .text(text)
     // this computation avoid text overflow. When formatted value is over 10 characters, we should reduce font size
-    .style('font-size', () => `${width.current / 11 / (text.length > 10 ? text.length / 10 : 1)}px`)
+    .style('font-size', () => fontSize ? fontSize : `${width.current / 11 / (text.length > 10 ? text.length / 10 : 1)}px`)
     .style('fill', props.textColor)
     .attr('class', 'percent-text')
 }
