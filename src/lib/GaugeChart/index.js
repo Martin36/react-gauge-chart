@@ -45,15 +45,13 @@ const GaugeChart = (props) => {
   const arcChart = useRef(arc())
   const arcData = useRef([])
   const pieChart = useRef(pie())
-  const prevProps = useRef(props)
-
+  const prevProps = useRef(props);
+  let selectedRef = useRef({})
   useEffect(() => {
-    setArcData(props, nbArcsToDisplay, colorArray, arcData)
-    if (props.id) {
-      container.current = select(`#${props.id}`)
-      //Initialize chart
-      initChart()
-    }
+    setArcData(props, nbArcsToDisplay, colorArray, arcData);
+    container.current = select(selectedRef);
+    //Initialize chart
+    initChart()
   }, [])
 
   useDeepCompareEffect(() => {
@@ -101,7 +99,7 @@ const GaugeChart = (props) => {
   }
     
   const { id, style, className } = props;
-  return <div id={id} className={className} style={style} />;
+  return <div id={id} className={className} style={style} ref={(svg) => selectedRef = svg}/>;
 }
 
 export default GaugeChart
@@ -125,7 +123,7 @@ GaugeChart.defaultProps = {
 }
 
 GaugeChart.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
   marginInPercent: PropTypes.number,
