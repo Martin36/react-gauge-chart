@@ -260,7 +260,11 @@ const drawNeedle = (resize, prevProps, props, width, needle, container, outerRad
     .tween('progress', function(){
       const currentPercent = interpolateNumber(prevPercent, percent);
       return function(percentOfPercent){
-        const progress = currentPercent(percentOfPercent);
+        var progress = currentPercent(percentOfPercent);
+        if (stopNeedleAtMax && progress > 1.0) {
+          progress = 1.05; // just above 1.0 to indicate that it is out of bounds
+        }
+        console.log(`progress: ${progress}`)
         return container.current.select(`.needle path`).attr("d", calculateRotation(progress, outerRadius, width));
       }
     });
