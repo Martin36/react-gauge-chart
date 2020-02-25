@@ -122,7 +122,8 @@ GaugeChart.defaultProps = {
   animate: true,
   animDelay: 500,
   formatTextValue: null,
-  fontSize: null
+  fontSize: null,
+  stopNeedleAtMax: false,
 }
 
 GaugeChart.propTypes = {
@@ -143,7 +144,8 @@ GaugeChart.propTypes = {
   hideText: PropTypes.bool,
   animate: PropTypes.bool,
   formatTextValue: PropTypes.func,
-  fontSize: PropTypes.string
+  fontSize: PropTypes.string,
+  stopNeedleAtMax: PropTypes.bool
 }
 
  // This function update arc's datas when component is mounting or when one of arc's props is updated
@@ -229,13 +231,13 @@ const getColors = (props, nbArcsToDisplay) => {
 
 //If 'resize' is true then the animation does not play
 const drawNeedle = (resize, prevProps, props, width, needle, container, outerRadius, g) => {
-  const { percent, needleColor, needleBaseColor, hideText, animate } = props;
+  const { percent, needleColor, needleBaseColor, hideText, animate, stopNeedleAtMax } = props;
   var needleRadius = 15*(width.current / 500) ,   // Make the needle radius responsive
       centerPoint = [0, -needleRadius/2];
   //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   const prevPercent = prevProps ? prevProps.percent : 0;
-  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
+  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width, stopNeedleAtMax);
   needle.current.append("path")
     .attr("d", pathStr)
     .attr("fill", needleColor);
@@ -259,16 +261,19 @@ const drawNeedle = (resize, prevProps, props, width, needle, container, outerRad
       const currentPercent = interpolateNumber(prevPercent, percent);
       return function(percentOfPercent){
         const progress = currentPercent(percentOfPercent);
-        return container.current.select(`.needle path`).attr("d", calculateRotation(progress, outerRadius, width));
+        return container.current.select(`.needle path`).attr("d", calculateRotation(progress, outerRadius, width, stopNeedleAtMax));
       }
     });
   }
   else{
-    container.current.select(`.needle path`).attr("d", calculateRotation(percent, outerRadius, width));
+    container.current.select(`.needle path`).attr("d", calculateRotation(percent, outerRadius, width, stopNeedleAtMax));
   }
 }
 
-const calculateRotation = (percent, outerRadius, width) => {
+const calculateRotation = (percent, outerRadius, width, stopNeedleAtMax) => {
+  if (stopNeedleAtMax && percent > 1.0) {
+    percent = 1.05; // just above 1.0 to indicate that it is out of bounds
+  }
   var needleLength = outerRadius.current * 0.55, //TODO: Maybe it should be specified as a percentage of the arc radius?
     needleRadius = 15 * (width.current / 500),
     theta = percentToRad(percent),
