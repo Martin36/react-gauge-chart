@@ -261,7 +261,7 @@ const drawNeedle = (resize, prevProps, props, width, needle, container, outerRad
       const currentPercent = interpolateNumber(prevPercent, percent);
       return function(percentOfPercent){
         const progress = currentPercent(percentOfPercent);
-        return container.current.select(`.needle path`).attr("d", calculateRotation(progress, outerRadius, width, stopNeedleAtMax));
+        return container.current.select(`.needle path`).attr("d", calculateRotation(progress, outerRadius, width));
       }
     });
   }
