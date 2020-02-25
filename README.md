@@ -116,6 +116,7 @@ The props for the chart:
 | animate         | PropTypes.bool              | Whether or not to animate the needle when loaded               | true                   |
 | animDelay       | PropTypes.number            | Delay in ms before start the needle animation                  | 500                    |
 | formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%')        | null                   |
+| stopNeedleAtMax | PropTypes.bool              | Whether or not the needle should stop rotating at max        | false                   |
 
 ##### Colors for the chart
 
