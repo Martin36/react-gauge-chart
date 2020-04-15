@@ -143,7 +143,9 @@ GaugeChart.defaultProps = {
   hideText: false,
   animate: true,
   animDelay: 500,
-  formatTextValue: null
+  formatTextValue: null,
+  fontSize: null,
+  stopNeedleAtMax: false
 };
 GaugeChart.propTypes = {
   id: _propTypes.default.string.isRequired,
@@ -162,7 +164,9 @@ GaugeChart.propTypes = {
   needleBaseColor: _propTypes.default.string,
   hideText: _propTypes.default.bool,
   animate: _propTypes.default.bool,
-  formatTextValue: _propTypes.default.func
+  formatTextValue: _propTypes.default.func,
+  fontSize: _propTypes.default.string,
+  stopNeedleAtMax: _propTypes.default.bool
 }; // This function update arc's datas when component is mounting or when one of arc's props is updated
 
 var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData) {
@@ -237,14 +241,15 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
       needleColor = props.needleColor,
       needleBaseColor = props.needleBaseColor,
       hideText = props.hideText,
-      animate = props.animate;
+      animate = props.animate,
+      stopNeedleAtMax = props.stopNeedleAtMax;
   var needleRadius = 15 * (width.current / 500),
       // Make the needle radius responsive
   centerPoint = [0, -needleRadius / 2]; //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
 
   var prevPercent = prevProps ? prevProps.percent : 0;
-  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
+  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width, stopNeedleAtMax);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
 
   needle.current.append('circle').attr('cx', centerPoint[0]).attr('cy', centerPoint[1]).attr('r', needleRadius).attr('fill', needleBaseColor);
@@ -259,15 +264,24 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
       var currentPercent = (0, _d.interpolateNumber)(prevPercent, percent);
       return function (percentOfPercent) {
         var progress = currentPercent(percentOfPercent);
+
+        if (stopNeedleAtMax && progress > 1.0) {
+          progress = 1.05; // just above 1.0 to indicate that it is out of bounds
+        }
+
         return container.current.select(".needle path").attr("d", calculateRotation(progress, outerRadius, width));
       };
     });
   } else {
-    container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width));
+    container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width, stopNeedleAtMax));
   }
 };
 
-var calculateRotation = function calculateRotation(percent, outerRadius, width) {
+var calculateRotation = function calculateRotation(percent, outerRadius, width, stopNeedleAtMax) {
+  if (stopNeedleAtMax && percent > 1.0) {
+    percent = 1.05; // just above 1.0 to indicate that it is out of bounds
+  }
+
   var needleLength = outerRadius.current * 0.55,
       //TODO: Maybe it should be specified as a percentage of the arc radius?
   needleRadius = 15 * (width.current / 500),
@@ -287,12 +301,13 @@ var percentToRad = function percentToRad(percent) {
 
 
 var addText = function addText(percentage, props, outerRadius, width, g) {
-  var formatTextValue = props.formatTextValue;
+  var formatTextValue = props.formatTextValue,
+      fontSize = props.fontSize;
   var textPadding = 20;
   var text = formatTextValue ? formatTextValue(floatingNumber(percentage)) : floatingNumber(percentage) + '%';
   g.current.append('g').attr('class', 'text-group').attr('transform', "translate(".concat(outerRadius.current, ", ").concat(outerRadius.current / 2 + textPadding, ")")).append('text').text(text) // this computation avoid text overflow. When formatted value is over 10 characters, we should reduce font size
   .style('font-size', function () {
-    return "".concat(width.current / 11 / (text.length > 10 ? text.length / 10 : 1), "px");
+    return fontSize ? fontSize : "".concat(width.current / 11 / (text.length > 10 ? text.length / 10 : 1), "px");
   }).style('fill', props.textColor).attr('class', 'percent-text');
 };
 
