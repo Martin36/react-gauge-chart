@@ -122,8 +122,9 @@ GaugeChart.defaultProps = {
   animate: true,
   animDelay: 500,
   formatTextValue: null,
-  fontSize: null,
   stopNeedleAtMax: false,
+  fontSize: null,
+  animateDuration: 3000
 }
 
 GaugeChart.propTypes = {
@@ -146,6 +147,7 @@ GaugeChart.propTypes = {
   formatTextValue: PropTypes.func,
   fontSize: PropTypes.string,
   stopNeedleAtMax: PropTypes.bool
+  animateDuration: PropTypes.number,
 }
 
  // This function update arc's datas when component is mounting or when one of arc's props is updated
@@ -256,7 +258,7 @@ const drawNeedle = (resize, prevProps, props, width, needle, container, outerRad
     needle.current.transition()
     .delay(props.animDelay)
     .ease(easeElastic)
-    .duration(3000)
+    .duration(props.animateDuration)
     .tween('progress', function(){
       const currentPercent = interpolateNumber(prevPercent, percent);
       return function(percentOfPercent){
