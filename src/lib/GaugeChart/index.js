@@ -146,7 +146,7 @@ GaugeChart.propTypes = {
   animate: PropTypes.bool,
   formatTextValue: PropTypes.func,
   fontSize: PropTypes.string,
-  stopNeedleAtMax: PropTypes.bool
+  stopNeedleAtMax: PropTypes.bool,
   animateDuration: PropTypes.number,
 }
 
