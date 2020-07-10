@@ -75,6 +75,7 @@ const GaugeChart = (props) => {
       return;
     }
 
+    container.current.select("svg").remove();
     svg.current = container.current.append("svg");
     g.current = svg.current.append("g")   //Used for margins
     doughnut.current = g.current.append("g")
