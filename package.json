@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Martin36/react-gauge-chart"
+    "url": "https://github.com/BossBele/react-gauge-chart"
   },
   "dependencies": {
     "d3": "^5.12.0"
@@ -61,6 +61,8 @@
   "peerDependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
