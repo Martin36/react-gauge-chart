@@ -38,30 +38,28 @@ const animateNeedleProps = [
 ];
 
 const GaugeChart = (props) => {
-  const svg = useRef({});
-  const g = useRef({});
-  const width = useRef({});
-  const height = useRef({});
-  const doughnut = useRef({});
-  const needle = useRef({});
-  const outerRadius = useRef({});
-  const margin = useRef({}); // = {top: 20, right: 50, bottom: 50, left: 50},
-  const container = useRef({});
-  const nbArcsToDisplay = useRef(0);
-  const colorArray = useRef([]);
-  const arcChart = useRef(arc());
-  const arcData = useRef([]);
-  const pieChart = useRef(pie());
+  const svg = useRef({})
+  const g = useRef({})
+  const width = useRef({})
+  const height = useRef({})
+  const doughnut = useRef({})
+  const needle = useRef({})
+  const outerRadius = useRef({})
+  const margin = useRef({}) // = {top: 20, right: 50, bottom: 50, left: 50},
+  const container = useRef({})
+  const nbArcsToDisplay = useRef(0)
+  const colorArray = useRef([])
+  const arcChart = useRef(arc())
+  const arcData = useRef([])
+  const pieChart = useRef(pie())
   const prevProps = useRef(props);
-
+  let selectedRef = useRef({})
   useEffect(() => {
     setArcData(props, nbArcsToDisplay, colorArray, arcData);
-    if (props.id) {
-      container.current = select(`#${props.id}`);
-      //Initialize chart
-      initChart();
-    }
-  }, []);
+    container.current = select(selectedRef);
+    //Initialize chart
+    initChart()
+  }, [])
 
   useDeepCompareEffect(() => {
     if (
@@ -109,6 +107,7 @@ const GaugeChart = (props) => {
       return;
     }
 
+    container.current.select("svg").remove();
     svg.current = container.current.append("svg");
     g.current = svg.current.append("g"); //Used for margins
     doughnut.current = g.current.append("g").attr("class", "doughnut");
@@ -166,8 +165,8 @@ const GaugeChart = (props) => {
   };
 
   const { id, style, className } = props;
-  return <div id={id} className={className} style={style} />;
-};
+  return <div id={id} className={className} style={style} ref={(svg) => selectedRef = svg}/>;
+}
 
 export default GaugeChart;
 
@@ -192,7 +191,7 @@ GaugeChart.defaultProps = {
 };
 
 GaugeChart.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
   marginInPercent: PropTypes.number,

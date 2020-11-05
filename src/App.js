@@ -33,12 +33,11 @@ const App = () => {
         <Row>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with default props</h6>
-            <GaugeChart id="gauge-chart1" style={chartStyle} />
+            <GaugeChart style={chartStyle} />
           </Col>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with 20 levels</h6>
             <GaugeChart
-							id="gauge-chart2"
 							style={chartStyle}
 							nrOfLevels={20}
 							percent={0.86}
@@ -51,7 +50,6 @@ const App = () => {
           <Col xs={12} lg={6}>
             <h6>GaugeChart with custom colors</h6>
             <GaugeChart
-              id="gauge-chart3"
 							style={chartStyle}
               nrOfLevels={30}
               colors={['#FF5F6D', '#FFC371']}
