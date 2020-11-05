@@ -83,7 +83,7 @@ https://martin36.github.io/react-gauge-chart/
 
 ### Warning: Do not use the same `id` for multiple charts, as it will put multiple charts in the same container
 
-#### Note: If you do any updates to the props of the chart, it will rerender with a different size (it's a bug). To prevent this set a fixed height for the chart e.g
+#### Note: If you do any updates to the props of the chart, it will rerender with a different size (it's a bug). To prevent this set a fixed height for the chart e.g.
 
 ```jsx
 const chartStyle = {
@@ -112,9 +112,9 @@ The props for the chart:
 | needleColor     | PropTypes.string            | The color of the needle triangle                               | "#464A4F"              |
 | needleBaseColor | PropTypes.string            | The color of the circle at the base of the needle              | "#464A4F"              |
 | hideText        | PropTypes.bool              | Whether or not to hide the percentage display                  | false                  |
-| arcsLength      | PropTypes.array             | An array specifying the lenght of the each individual arc. If this prop is then the nrOfLevels prop will have no effect      | none                   |
+| arcsLength      | PropTypes.array             | An array specifying the length of each individual arc. If this prop is set, the nrOfLevels prop will have no effect      | none                   |
 | animate         | PropTypes.bool              | Whether or not to animate the needle when loaded               | true                   |
-| animDelay       | PropTypes.number            | Delay in ms before start the needle animation                  | 500                    |
+| animDelay       | PropTypes.number            | Delay in ms before starting the needle animation               | 500                    |
 | formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%')        | null                   |
 
 ##### Colors for the chart
