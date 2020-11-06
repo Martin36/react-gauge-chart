@@ -126,7 +126,6 @@ const App = () => {
               nrOfLevels={420}
               arcsLength={arcs}
               colors={['#5BE12C', '#F5CD19', '#EA4228']}
-              percent={0.37}
               arcPadding={0.02}
             />
           </Col>
