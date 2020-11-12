@@ -11,7 +11,7 @@ var _d = require("d3");
 
 var _propTypes = _interopRequireDefault(require("prop-types"));
 
-require("./style.css");
+// require("./style.css");
 
 var _customHooks = _interopRequireDefault(require("./customHooks"));
 
