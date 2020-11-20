@@ -1,6 +1,6 @@
 {
-  "name": "react-gauge-chart-nextjs-support",
-  "version": "1.0.0",
+  "name": "react-gauge-chart",
+  "version": "0.3.0",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
