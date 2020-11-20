@@ -1,6 +1,6 @@
 {
-  "name": "react-gauge-chart",
-  "version": "0.2.5",
+  "name": "react-gauge-chart-nextjs-support",
+  "version": "1.0.0",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -61,5 +61,8 @@
   "peerDependencies": {
     "react": "^16.8.2",
     "react-dom": "^16.8.2"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
