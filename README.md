@@ -124,5 +124,3 @@ each arc would a color in the array (colors are assigned from left to right). If
 must match the **number of levels** in the arc.
 If the number of colors does not match the number of levels, then the **first** and the **last** color from the colors array will
 be selected and the arcs will get colors that are interpolated between those. The interpolation is done using [d3.interpolateHsl](https://github.com/d3/d3-interpolate#interpolateHsl).
-
-dom
