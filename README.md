@@ -115,6 +115,7 @@ The props for the chart:
 | arcsLength      | PropTypes.array             | An array specifying the length of each individual arc. If this prop is set, the nrOfLevels prop will have no effect      | none                   |
 | animate         | PropTypes.bool              | Whether or not to animate the needle when loaded               | true                   |
 | animDelay       | PropTypes.number            | Delay in ms before starting the needle animation               | 500                    |
+| animateDuration       | PropTypes.number            | Duration in ms for the needle animation               | 3000                    |
 | formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%')        | null                   |
 
 ##### Colors for the chart
