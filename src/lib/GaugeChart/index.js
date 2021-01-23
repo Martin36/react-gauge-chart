@@ -210,6 +210,7 @@ GaugeChart.propTypes = {
   formatTextValue: PropTypes.func,
   fontSize: PropTypes.string,
   animateDuration: PropTypes.number,
+  animDelay: PropTypes.number,
 };
 
 // This function update arc's datas when component is mounting or when one of arc's props is updated
