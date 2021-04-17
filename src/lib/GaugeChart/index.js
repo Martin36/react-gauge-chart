@@ -85,6 +85,36 @@ const GaugeChart = (props) => {
     props.needleBaseColor,
   ]);
 
+  
+  const handleResize = () => {
+    var resize = true
+
+    renderChart(
+      resize,
+      prevProps,
+      width,
+      margin,
+      height,
+      outerRadius,
+      g,
+      doughnut,
+      arcChart,
+      needle,
+      pieChart,
+      svg,
+      props,
+      container,
+      arcData
+    )
+  }
+  useEffect(() => {
+    //Set up resize event listener to re-render the chart everytime the window is resized
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [handleResize])
+  
   const initChart = (update, resize = false, prevProps) => {
     if (update) {
       renderChart(
@@ -124,27 +154,7 @@ const GaugeChart = (props) => {
       .sort(null);
     //Add the needle element
     needle.current = g.current.append("g").attr("class", "needle");
-    //Set up resize event listener to re-render the chart everytime the window is resized
-    window.addEventListener("resize", () => {
-      var resize = true;
-      renderChart(
-        resize,
-        prevProps,
-        width,
-        margin,
-        height,
-        outerRadius,
-        g,
-        doughnut,
-        arcChart,
-        needle,
-        pieChart,
-        svg,
-        props,
-        container,
-        arcData
-      );
-    });
+   
     renderChart(
       resize,
       prevProps,

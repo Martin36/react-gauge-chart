@@ -1,6 +1,6 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -43,7 +43,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.6.2",
+    "@babel/cli": "^7.12.8",
     "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
@@ -53,7 +53,7 @@
     "cross-env": "^5.2.1",
     "gh-pages": "^2.1.1",
     "react": "^16.10.1",
-    "react-bootstrap": "^1.0.0-beta.12",
+    "react-bootstrap": "^1.4.0",
     "react-dom": "^16.10.1",
     "react-scripts": "2.1.5",
     "rimraf": "^2.7.1"
