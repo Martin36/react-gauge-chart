@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useLayoutEffect } from "react";
 import {
   arc,
   pie,
@@ -38,28 +38,91 @@ const animateNeedleProps = [
 ];
 
 const GaugeChart = (props) => {
-  const svg = useRef({})
-  const g = useRef({})
-  const width = useRef({})
-  const height = useRef({})
-  const doughnut = useRef({})
-  const needle = useRef({})
-  const outerRadius = useRef({})
-  const margin = useRef({}) // = {top: 20, right: 50, bottom: 50, left: 50},
-  const container = useRef({})
-  const nbArcsToDisplay = useRef(0)
-  const colorArray = useRef([])
-  const arcChart = useRef(arc())
-  const arcData = useRef([])
-  const pieChart = useRef(pie())
+  const svg = useRef({});
+  const g = useRef({});
+  const width = useRef({});
+  const height = useRef({});
+  const doughnut = useRef({});
+  const needle = useRef({});
+  const outerRadius = useRef({});
+  const margin = useRef({}); // = {top: 20, right: 50, bottom: 50, left: 50},
+  const container = useRef({});
+  const nbArcsToDisplay = useRef(0);
+  const colorArray = useRef([]);
+  const arcChart = useRef(arc());
+  const arcData = useRef([]);
+  const pieChart = useRef(pie());
   const prevProps = useRef(props);
-  let selectedRef = useRef({})
-  useEffect(() => {
+  let selectedRef = useRef({});
+
+  const initChart = useCallback(
+    (update, resize = false, prevProps) => {
+      if (update) {
+        renderChart(
+          resize,
+          prevProps,
+          width,
+          margin,
+          height,
+          outerRadius,
+          g,
+          doughnut,
+          arcChart,
+          needle,
+          pieChart,
+          svg,
+          props,
+          container,
+          arcData
+        );
+        return;
+      }
+
+      container.current.select("svg").remove();
+      svg.current = container.current.append("svg");
+      g.current = svg.current.append("g"); //Used for margins
+      doughnut.current = g.current.append("g").attr("class", "doughnut");
+
+      //Set up the pie generator
+      //Each arc should be of equal length (or should they?)
+      pieChart.current
+        .value(function (d) {
+          return d.value;
+        })
+        //.padAngle(arcPadding)
+        .startAngle(startAngle)
+        .endAngle(endAngle)
+        .sort(null);
+      //Add the needle element
+      needle.current = g.current.append("g").attr("class", "needle");
+
+      renderChart(
+        resize,
+        prevProps,
+        width,
+        margin,
+        height,
+        outerRadius,
+        g,
+        doughnut,
+        arcChart,
+        needle,
+        pieChart,
+        svg,
+        props,
+        container,
+        arcData
+      );
+    },
+    [props]
+  );
+
+  useLayoutEffect(() => {
     setArcData(props, nbArcsToDisplay, colorArray, arcData);
     container.current = select(selectedRef);
     //Initialize chart
-    initChart()
-  }, [])
+    initChart();
+  }, [props, initChart]);
 
   useDeepCompareEffect(() => {
     if (
@@ -85,38 +148,10 @@ const GaugeChart = (props) => {
     props.needleBaseColor,
   ]);
 
-  
-  const handleResize = () => {
-    var resize = true
-
-    renderChart(
-      resize,
-      prevProps,
-      width,
-      margin,
-      height,
-      outerRadius,
-      g,
-      doughnut,
-      arcChart,
-      needle,
-      pieChart,
-      svg,
-      props,
-      container,
-      arcData
-    )
-  }
   useEffect(() => {
-    //Set up resize event listener to re-render the chart everytime the window is resized
-    window.addEventListener('resize', handleResize)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
-  }, [handleResize])
-  
-  const initChart = (update, resize = false, prevProps) => {
-    if (update) {
+    const handleResize = () => {
+      var resize = true;
+
       renderChart(
         resize,
         prevProps,
@@ -134,49 +169,24 @@ const GaugeChart = (props) => {
         container,
         arcData
       );
-      return;
-    }
-
-    container.current.select("svg").remove();
-    svg.current = container.current.append("svg");
-    g.current = svg.current.append("g"); //Used for margins
-    doughnut.current = g.current.append("g").attr("class", "doughnut");
-
-    //Set up the pie generator
-    //Each arc should be of equal length (or should they?)
-    pieChart.current
-      .value(function (d) {
-        return d.value;
-      })
-      //.padAngle(arcPadding)
-      .startAngle(startAngle)
-      .endAngle(endAngle)
-      .sort(null);
-    //Add the needle element
-    needle.current = g.current.append("g").attr("class", "needle");
-   
-    renderChart(
-      resize,
-      prevProps,
-      width,
-      margin,
-      height,
-      outerRadius,
-      g,
-      doughnut,
-      arcChart,
-      needle,
-      pieChart,
-      svg,
-      props,
-      container,
-      arcData
-    );
-  };
+    };
+    //Set up resize event listener to re-render the chart everytime the window is resized
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [props]);
 
   const { id, style, className } = props;
-  return <div id={id} className={className} style={style} ref={(svg) => selectedRef = svg}/>;
-}
+  return (
+    <div
+      id={id}
+      className={className}
+      style={style}
+      ref={(svg) => (selectedRef = svg)}
+    />
+  );
+};
 
 export default GaugeChart;
 
