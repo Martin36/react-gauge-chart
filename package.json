@@ -1,5 +1,5 @@
 {
-  "name": "react-gauge-chart",
+  "name": "@martin36/react-gauge-chart",
   "version": "0.4.0",
   "main": "dist/index",
   "module": "dist/index",
