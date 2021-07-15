@@ -28,7 +28,7 @@ var useDeepCompareMemo = function useDeepCompareMemo(dependencies) {
 
 
 var useDeepCompareEffect = function useDeepCompareEffect(callback, dependencies) {
-  (0, _react.useEffect)(callback, useDeepCompareMemo(dependencies));
+  (0, _react.useEffect)(callback, [useDeepCompareMemo(dependencies), callback]);
 };
 
 var _default = useDeepCompareEffect;

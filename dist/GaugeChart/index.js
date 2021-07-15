@@ -56,44 +56,7 @@ var GaugeChart = function GaugeChart(props) {
   var pieChart = (0, _react.useRef)((0, _d.pie)());
   var prevProps = (0, _react.useRef)(props);
   var selectedRef = (0, _react.useRef)({});
-  (0, _react.useEffect)(function () {
-    setArcData(props, nbArcsToDisplay, colorArray, arcData);
-    container.current = (0, _d.select)(selectedRef); //Initialize chart
-
-    initChart();
-  }, []);
-  (0, _customHooks.default)(function () {
-    if (props.nrOfLevels || prevProps.current.arcsLength.every(function (a) {
-      return props.arcsLength.includes(a);
-    }) || prevProps.current.colors.every(function (a) {
-      return props.colors.includes(a);
-    })) {
-      setArcData(props, nbArcsToDisplay, colorArray, arcData);
-    } //Initialize chart
-    // Always redraw the chart, but potentially do not animate it
-
-
-    var resize = !animateNeedleProps.some(function (key) {
-      return prevProps.current[key] !== props[key];
-    });
-    initChart(true, resize, prevProps.current);
-    prevProps.current = props;
-  }, [props.nrOfLevels, props.arcsLength, props.colors, props.percent, props.needleColor, props.needleBaseColor]);
-
-  var handleResize = function handleResize() {
-    var resize = true;
-    renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
-  };
-
-  (0, _react.useEffect)(function () {
-    //Set up resize event listener to re-render the chart everytime the window is resized
-    window.addEventListener('resize', handleResize);
-    return function () {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [handleResize]);
-
-  var initChart = function initChart(update) {
+  var initChart = (0, _react.useCallback)(function (update) {
     var resize = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
     var prevProps = arguments.length > 2 ? arguments[2] : undefined;
 
@@ -116,8 +79,42 @@ var GaugeChart = function GaugeChart(props) {
 
     needle.current = g.current.append("g").attr("class", "needle");
     renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
-  };
+  }, [props]);
+  (0, _react.useLayoutEffect)(function () {
+    setArcData(props, nbArcsToDisplay, colorArray, arcData);
+    container.current = (0, _d.select)(selectedRef); //Initialize chart
 
+    initChart();
+  }, [props, initChart]);
+  (0, _customHooks.default)(function () {
+    if (props.nrOfLevels || prevProps.current.arcsLength.every(function (a) {
+      return props.arcsLength.includes(a);
+    }) || prevProps.current.colors.every(function (a) {
+      return props.colors.includes(a);
+    })) {
+      setArcData(props, nbArcsToDisplay, colorArray, arcData);
+    } //Initialize chart
+    // Always redraw the chart, but potentially do not animate it
+
+
+    var resize = !animateNeedleProps.some(function (key) {
+      return prevProps.current[key] !== props[key];
+    });
+    initChart(true, resize, prevProps.current);
+    prevProps.current = props;
+  }, [props.nrOfLevels, props.arcsLength, props.colors, props.percent, props.needleColor, props.needleBaseColor]);
+  (0, _react.useEffect)(function () {
+    var handleResize = function handleResize() {
+      var resize = true;
+      renderChart(resize, prevProps, width, margin, height, outerRadius, g, doughnut, arcChart, needle, pieChart, svg, props, container, arcData);
+    }; //Set up resize event listener to re-render the chart everytime the window is resized
+
+
+    window.addEventListener("resize", handleResize);
+    return function () {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [props]);
   var id = props.id,
       style = props.style,
       className = props.className;
@@ -174,7 +171,8 @@ GaugeChart.propTypes = {
   animate: _propTypes.default.bool,
   formatTextValue: _propTypes.default.func,
   fontSize: _propTypes.default.string,
-  animateDuration: _propTypes.default.number
+  animateDuration: _propTypes.default.number,
+  animDelay: _propTypes.default.number
 }; // This function update arc's datas when component is mounting or when one of arc's props is updated
 
 var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData) {
