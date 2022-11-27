@@ -1,6 +1,6 @@
 {
   "name": "react-gauge-chart",
-  "version": "0.5.0",
+  "version": "0.4.1",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -21,7 +21,7 @@
     "url": "https://github.com/Martin36/react-gauge-chart"
   },
   "dependencies": {
-    "d3": "^5.12.0"
+    "d3": "^7.6.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -59,8 +59,8 @@
     "rimraf": "^2.7.1"
   },
   "peerDependencies": {
-    "react": "^16.8.2 || ^17.0",
-    "react-dom": "^16.8.2 || ^17.0"
+    "react": "^16.8.2 || ^17.0 || ^18.x",
+    "react-dom": "^16.8.2 || ^17.0 || ^18.x"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
