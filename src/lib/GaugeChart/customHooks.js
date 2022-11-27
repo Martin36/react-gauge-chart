@@ -1,8 +1,8 @@
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import { useEffect, useRef } from "react";
 
 const isDeepEquals = (toCompare, reference) => {
-  return _.isEqual(toCompare, reference);
+  return isEqual(toCompare, reference);
 };
 
 const useDeepCompareMemo = (dependencies) => {
