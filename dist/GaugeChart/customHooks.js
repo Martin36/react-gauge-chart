@@ -5,14 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _lodash = _interopRequireDefault(require("lodash"));
+var _isEqual = _interopRequireDefault(require("lodash/isEqual"));
 
 var _react = require("react");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var isDeepEquals = function isDeepEquals(toCompare, reference) {
-  return _lodash.default.isEqual(toCompare, reference);
+  return (0, _isEqual.default)(toCompare, reference);
 };
 
 var useDeepCompareMemo = function useDeepCompareMemo(dependencies) {
