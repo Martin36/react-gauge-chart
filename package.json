@@ -1,6 +1,6 @@
 {
-  "name": "@martin36/react-gauge-chart",
-  "version": "0.4.0",
+  "name": "react-gauge-chart",
+  "version": "0.5.0",
   "main": "dist/index",
   "module": "dist/index",
   "typings": "dist/index",
@@ -63,6 +63,6 @@
     "react-dom": "^16.8.2 || ^17.0"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   }
 }
