@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import './App.css'
-import GaugeChart from './lib'
+import GaugeChart from './lib' 
 
 const App = () => {
   const [currentPercent, setCurrentPercent] = useState();
