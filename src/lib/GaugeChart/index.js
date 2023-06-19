@@ -175,7 +175,8 @@ const GaugeChart = (props) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [props]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { id, style, className } = props;
   return (
