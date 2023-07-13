@@ -288,9 +288,7 @@ var calculateRotation = function calculateRotation(percent, outerRadius, width, 
       centerPoint = [0, -needleRadius / 2],
       topPoint = [centerPoint[0] - needleLength * Math.cos(theta), centerPoint[1] - needleLength * Math.sin(theta)],
       leftPoint = [centerPoint[0] - needleRadius * Math.cos(theta - Math.PI / 2), centerPoint[1] - needleRadius * Math.sin(theta - Math.PI / 2)],
-      rightPoint = [centerPoint[0] - needleRadius * Math.cos(theta + Math.PI / 2), centerPoint[1] - needleRadius * Math.sin(theta + Math.PI / 2)]; // var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
-
-  var scale = 1;
+      rightPoint = [centerPoint[0] - needleRadius * Math.cos(theta + Math.PI / 2), centerPoint[1] - needleRadius * Math.sin(theta + Math.PI / 2)];
   var pathStr = "M ".concat(leftPoint[0], " ").concat(leftPoint[1], " L ").concat(topPoint[0] * scale, " ").concat(topPoint[1] * scale, " L ").concat(rightPoint[0], " ").concat(rightPoint[1]);
   return pathStr;
 }; //Returns the angle (in rad) for the given 'percent' value where percent = 1 means 100% and is 180 degree angle
