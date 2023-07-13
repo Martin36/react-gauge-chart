@@ -33,7 +33,7 @@ const App = () => {
         <Row>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with default props</h6>
-            <GaugeChart style={chartStyle} />
+            <GaugeChart style={chartStyle} needleScale={0.8}/>
           </Col>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with 20 levels</h6>
