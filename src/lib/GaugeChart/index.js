@@ -37,7 +37,28 @@ const animateNeedleProps = [
   "animDelay",
 ];
 
+const defaultProps = {
+  style: defaultStyle,
+  marginInPercent: 0.05,
+  cornerRadius: 6,
+  nrOfLevels: 3,
+  percent: 0.4,
+  arcPadding: 0.05, //The padding between arcs, in rad
+  arcWidth: 0.2, //The width of the arc given in percent of the radius
+  colors: ["#00FF00", "#FF0000"], //Default defined colors
+  textColor: "#fff",
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false,
+  animate: true,
+  animDelay: 500,
+  formatTextValue: null,
+  fontSize: null,
+  animateDuration: 3000,
+};
+
 const GaugeChart = (props) => {
+  props = { ...defaultProps, ...props };
   const svg = useRef({});
   const g = useRef({});
   const width = useRef({});
@@ -86,7 +107,7 @@ const GaugeChart = (props) => {
       //Set up the pie generator
       //Each arc should be of equal length (or should they?)
       pieChart.current
-        .value(function (d) {
+        .value(function(d) {
           return d.value;
         })
         //.padAngle(arcPadding)
@@ -189,26 +210,6 @@ const GaugeChart = (props) => {
 };
 
 export default GaugeChart;
-
-GaugeChart.defaultProps = {
-  style: defaultStyle,
-  marginInPercent: 0.05,
-  cornerRadius: 6,
-  nrOfLevels: 3,
-  percent: 0.4,
-  arcPadding: 0.05, //The padding between arcs, in rad
-  arcWidth: 0.2, //The width of the arc given in percent of the radius
-  colors: ["#00FF00", "#FF0000"], //Default defined colors
-  textColor: "#fff",
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
-  hideText: false,
-  animate: true,
-  animDelay: 500,
-  formatTextValue: null,
-  fontSize: null,
-  animateDuration: 3000,
-};
 
 GaugeChart.propTypes = {
   id: PropTypes.string,
@@ -320,7 +321,7 @@ const renderChart = (
   arcPaths
     .append("path")
     .attr("d", arcChart.current)
-    .style("fill", function (d) {
+    .style("fill", function(d) {
       return d.data.color;
     });
 
@@ -392,9 +393,9 @@ const drawNeedle = (
       .delay(props.animDelay)
       .ease(easeElastic)
       .duration(props.animateDuration)
-      .tween("progress", function () {
+      .tween("progress", function() {
         const currentPercent = interpolateNumber(prevPercent, percent);
-        return function (percentOfPercent) {
+        return function(percentOfPercent) {
           const progress = currentPercent(percentOfPercent);
           return container.current
             .select(`.needle path`)
@@ -446,8 +447,7 @@ const addText = (percentage, props, outerRadius, width, g) => {
     .attr("class", "text-group")
     .attr(
       "transform",
-      `translate(${outerRadius.current}, ${
-        outerRadius.current / 2 + textPadding
+      `translate(${outerRadius.current}, ${outerRadius.current / 2 + textPadding
       })`
     )
     .append("text")
