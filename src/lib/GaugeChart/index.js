@@ -427,7 +427,7 @@ const calculateRotation = (percent, outerRadius, width, needleScale) => {
       centerPoint[0] - needleRadius * Math.cos(theta + Math.PI / 2),
       centerPoint[1] - needleRadius * Math.sin(theta + Math.PI / 2),
     ];
-  var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0] * scale} ${topPoint[1] * scale} L ${rightPoint[0]} ${rightPoint[1]}`;
+  var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   return pathStr;
 };
 
