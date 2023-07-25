@@ -1,7 +1,5 @@
 "use strict";
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -19,7 +17,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 /*
 GaugeChart creates a gauge chart using D3
@@ -120,7 +118,7 @@ var GaugeChart = function GaugeChart(props) {
   var id = props.id,
       style = props.style,
       className = props.className;
-  return _react.default.createElement("div", {
+  return /*#__PURE__*/_react.default.createElement("div", {
     id: id,
     className: className,
     style: style,
@@ -152,7 +150,8 @@ GaugeChart.defaultProps = {
   animDelay: 500,
   formatTextValue: null,
   fontSize: null,
-  animateDuration: 3000
+  animateDuration: 3000,
+  needleScale: 0.55
 };
 GaugeChart.propTypes = {
   id: _propTypes.default.string,
@@ -174,7 +173,8 @@ GaugeChart.propTypes = {
   formatTextValue: _propTypes.default.func,
   fontSize: _propTypes.default.string,
   animateDuration: _propTypes.default.number,
-  animDelay: _propTypes.default.number
+  animDelay: _propTypes.default.number,
+  needleScale: _propTypes.default.number
 }; // This function update arc's datas when component is mounting or when one of arc's props is updated
 
 var setArcData = function setArcData(props, nbArcsToDisplay, colorArray, arcData) {
@@ -249,14 +249,15 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
       needleColor = props.needleColor,
       needleBaseColor = props.needleBaseColor,
       hideText = props.hideText,
-      animate = props.animate;
+      animate = props.animate,
+      needleScale = props.needleScale;
   var needleRadius = 15 * (width.current / 500),
       // Make the needle radius responsive
   centerPoint = [0, -needleRadius / 2]; //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
 
   var prevPercent = prevProps ? prevProps.percent : 0;
-  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
+  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width, needleScale);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor); //Add a circle at the bottom of needle
 
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
@@ -271,16 +272,16 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
       var currentPercent = (0, _d.interpolateNumber)(prevPercent, percent);
       return function (percentOfPercent) {
         var progress = currentPercent(percentOfPercent);
-        return container.current.select(".needle path").attr("d", calculateRotation(progress, outerRadius, width));
+        return container.current.select(".needle path").attr("d", calculateRotation(progress, outerRadius, width, needleScale));
       };
     });
   } else {
-    container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width));
+    container.current.select(".needle path").attr("d", calculateRotation(percent, outerRadius, width, needleScale));
   }
 };
 
-var calculateRotation = function calculateRotation(percent, outerRadius, width) {
-  var needleLength = outerRadius.current * 0.55,
+var calculateRotation = function calculateRotation(percent, outerRadius, width, needleScale) {
+  var needleLength = outerRadius.current * needleScale,
       //TODO: Maybe it should be specified as a percentage of the arc radius?
   needleRadius = 15 * (width.current / 500),
       theta = percentToRad(percent),
@@ -288,7 +289,7 @@ var calculateRotation = function calculateRotation(percent, outerRadius, width) 
       topPoint = [centerPoint[0] - needleLength * Math.cos(theta), centerPoint[1] - needleLength * Math.sin(theta)],
       leftPoint = [centerPoint[0] - needleRadius * Math.cos(theta - Math.PI / 2), centerPoint[1] - needleRadius * Math.sin(theta - Math.PI / 2)],
       rightPoint = [centerPoint[0] - needleRadius * Math.cos(theta + Math.PI / 2), centerPoint[1] - needleRadius * Math.sin(theta + Math.PI / 2)];
-  var pathStr = "M ".concat(leftPoint[0], " ").concat(leftPoint[1], " L ").concat(topPoint[0], " ").concat(topPoint[1], " L ").concat(rightPoint[0], " ").concat(rightPoint[1]);
+  var pathStr = "M ".concat(leftPoint[0], " ").concat(leftPoint[1], " L ").concat(topPoint[0] * scale, " ").concat(topPoint[1] * scale, " L ").concat(rightPoint[0], " ").concat(rightPoint[1]);
   return pathStr;
 }; //Returns the angle (in rad) for the given 'percent' value where percent = 1 means 100% and is 180 degree angle
 
