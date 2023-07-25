@@ -208,6 +208,7 @@ GaugeChart.defaultProps = {
   formatTextValue: null,
   fontSize: null,
   animateDuration: 3000,
+  needleScale: 0.55
 };
 
 GaugeChart.propTypes = {
@@ -231,6 +232,7 @@ GaugeChart.propTypes = {
   fontSize: PropTypes.string,
   animateDuration: PropTypes.number,
   animDelay: PropTypes.number,
+  needleScale: PropTypes.number
 };
 
 // This function update arc's datas when component is mounting or when one of arc's props is updated
@@ -367,13 +369,13 @@ const drawNeedle = (
   outerRadius,
   g
 ) => {
-  const { percent, needleColor, needleBaseColor, hideText, animate } = props;
+  const { percent, needleColor, needleBaseColor, hideText, animate, needleScale } = props;
   var needleRadius = 15 * (width.current / 500), // Make the needle radius responsive
     centerPoint = [0, -needleRadius / 2];
   //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   const prevPercent = prevProps ? prevProps.percent : 0;
-  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width);
+  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width, needleScale);
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
   //Add a circle at the bottom of needle
   needle.current
@@ -398,18 +400,18 @@ const drawNeedle = (
           const progress = currentPercent(percentOfPercent);
           return container.current
             .select(`.needle path`)
-            .attr("d", calculateRotation(progress, outerRadius, width));
+            .attr("d", calculateRotation(progress, outerRadius, width, needleScale));
         };
       });
   } else {
     container.current
       .select(`.needle path`)
-      .attr("d", calculateRotation(percent, outerRadius, width));
+      .attr("d", calculateRotation(percent, outerRadius, width, needleScale));
   }
 };
 
-const calculateRotation = (percent, outerRadius, width) => {
-  var needleLength = outerRadius.current * 0.55, //TODO: Maybe it should be specified as a percentage of the arc radius?
+const calculateRotation = (percent, outerRadius, width, needleScale) => {
+  var needleLength = outerRadius.current * needleScale, //TODO: Maybe it should be specified as a percentage of the arc radius?
     needleRadius = 15 * (width.current / 500),
     theta = percentToRad(percent),
     centerPoint = [0, -needleRadius / 2],
@@ -425,7 +427,7 @@ const calculateRotation = (percent, outerRadius, width) => {
       centerPoint[0] - needleRadius * Math.cos(theta + Math.PI / 2),
       centerPoint[1] - needleRadius * Math.sin(theta + Math.PI / 2),
     ];
-  var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
+  var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0] * scale} ${topPoint[1] * scale} L ${rightPoint[0]} ${rightPoint[1]}`;
   return pathStr;
 };
 
