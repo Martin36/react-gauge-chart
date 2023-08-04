@@ -175,16 +175,31 @@ const GaugeChart = (props) => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
 
-  const { id, style, className } = props;
+  const {
+    id,
+    style,
+    className,
+    textComponent,
+    textComponentContainerClassName,
+  } = props;
+
   return (
     <div
       id={id}
       className={className}
       style={style}
       ref={(svg) => (selectedRef = svg)}
-    />
+    >
+      <div
+        className={textComponentContainerClassName}
+        style={{ position: "relative", top: "50%" }}
+      >
+        {textComponent}
+      </div>
+    </div>
   );
 };
 
@@ -208,6 +223,7 @@ GaugeChart.defaultProps = {
   formatTextValue: null,
   fontSize: null,
   animateDuration: 3000,
+  textComponent: undefined,
   needleScale: 0.55
 };
 
@@ -232,6 +248,8 @@ GaugeChart.propTypes = {
   fontSize: PropTypes.string,
   animateDuration: PropTypes.number,
   animDelay: PropTypes.number,
+  textComponent: PropTypes.element,
+  textComponentContainerClassName: PropTypes.string,
   needleScale: PropTypes.number
 };
 
@@ -369,7 +387,7 @@ const drawNeedle = (
   outerRadius,
   g
 ) => {
-  const { percent, needleColor, needleBaseColor, hideText, animate, needleScale } = props;
+  const { percent, needleColor, needleBaseColor, hideText, animate, needleScale, textComponent } = props;
   var needleRadius = 15 * (width.current / 500), // Make the needle radius responsive
     centerPoint = [0, -needleRadius / 2];
   //Draw the triangle
@@ -384,7 +402,7 @@ const drawNeedle = (
     .attr("cy", centerPoint[1])
     .attr("r", needleRadius)
     .attr("fill", needleBaseColor);
-  if (!hideText) {
+  if (!hideText && !textComponent) {
     addText(percent, props, outerRadius, width, g);
   }
   //Rotate the needle

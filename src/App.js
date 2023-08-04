@@ -16,7 +16,7 @@ const App = () => {
 		return () => {
 			clearTimeout(timer);
 		};
-	});
+	}, []);
 
 	const chartStyle = {
 		height: 250,
@@ -33,7 +33,7 @@ const App = () => {
         <Row>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with default props</h6>
-            <GaugeChart style={chartStyle} needleScale={0.8}/>
+            <GaugeChart animate={false} style={chartStyle}/>
           </Col>
           <Col xs={12} lg={6}>
             <h6>GaugeChart with 20 levels</h6>
@@ -128,6 +128,20 @@ const App = () => {
               colors={['#5BE12C', '#F5CD19', '#EA4228']}
               percent={0.37}
               arcPadding={0.02}
+            />
+          </Col>
+          <Col xs={12} lg={6}>
+            <h6>GaugeChart with custom text component</h6>
+            <GaugeChart
+              id="gauge-chart9"
+							style={chartStyle}
+              nrOfLevels={420}
+              arcsLength={arcs}
+              colors={['#5BE12C', '#F5CD19', '#EA4228']}
+              percent={0.37}
+              arcPadding={0.02}
+              textComponent={<div>Warning!</div>}
+              textComponentContainerClassName="text-component"
             />
           </Col>
         </Row>          
