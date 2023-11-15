@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useLayoutEffect } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import {
   arc,
   pie,
@@ -37,7 +43,33 @@ const animateNeedleProps = [
   "animDelay",
 ];
 
-const GaugeChart = (props) => {
+const defaultProps = {
+  style: defaultStyle,
+  marginInPercent: 0.05,
+  cornerRadius: 6,
+  nrOfLevels: 3,
+  percent: 0.4,
+  arcPadding: 0.05, //The padding between arcs, in rad
+  arcWidth: 0.2, //The width of the arc given in percent of the radius
+  colors: ["#00FF00", "#FF0000"], //Default defined colors
+  textColor: "#fff",
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false,
+  animate: true,
+  animDelay: 500,
+  formatTextValue: null,
+  fontSize: null,
+  animateDuration: 3000,
+  textComponent: undefined,
+  needleScale: 0.55,
+};
+
+const GaugeChart = (initialProps) => {
+  const props = useMemo(
+    () => ({ ...defaultProps, ...initialProps }),
+    [initialProps]
+  );
   const svg = useRef({});
   const g = useRef({});
   const width = useRef({});
@@ -205,28 +237,6 @@ const GaugeChart = (props) => {
 
 export default GaugeChart;
 
-GaugeChart.defaultProps = {
-  style: defaultStyle,
-  marginInPercent: 0.05,
-  cornerRadius: 6,
-  nrOfLevels: 3,
-  percent: 0.4,
-  arcPadding: 0.05, //The padding between arcs, in rad
-  arcWidth: 0.2, //The width of the arc given in percent of the radius
-  colors: ["#00FF00", "#FF0000"], //Default defined colors
-  textColor: "#fff",
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
-  hideText: false,
-  animate: true,
-  animDelay: 500,
-  formatTextValue: null,
-  fontSize: null,
-  animateDuration: 3000,
-  textComponent: undefined,
-  needleScale: 0.55
-};
-
 GaugeChart.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
@@ -250,7 +260,7 @@ GaugeChart.propTypes = {
   animDelay: PropTypes.number,
   textComponent: PropTypes.element,
   textComponentContainerClassName: PropTypes.string,
-  needleScale: PropTypes.number
+  needleScale: PropTypes.number,
 };
 
 // This function update arc's datas when component is mounting or when one of arc's props is updated
@@ -387,13 +397,26 @@ const drawNeedle = (
   outerRadius,
   g
 ) => {
-  const { percent, needleColor, needleBaseColor, hideText, animate, needleScale, textComponent } = props;
+  const {
+    percent,
+    needleColor,
+    needleBaseColor,
+    hideText,
+    animate,
+    needleScale,
+    textComponent,
+  } = props;
   var needleRadius = 15 * (width.current / 500), // Make the needle radius responsive
     centerPoint = [0, -needleRadius / 2];
   //Draw the triangle
   //var pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   const prevPercent = prevProps ? prevProps.percent : 0;
-  var pathStr = calculateRotation(prevPercent || percent, outerRadius, width, needleScale);
+  var pathStr = calculateRotation(
+    prevPercent || percent,
+    outerRadius,
+    width,
+    needleScale
+  );
   needle.current.append("path").attr("d", pathStr).attr("fill", needleColor);
   //Add a circle at the bottom of needle
   needle.current
@@ -418,7 +441,10 @@ const drawNeedle = (
           const progress = currentPercent(percentOfPercent);
           return container.current
             .select(`.needle path`)
-            .attr("d", calculateRotation(progress, outerRadius, width, needleScale));
+            .attr(
+              "d",
+              calculateRotation(progress, outerRadius, width, needleScale)
+            );
         };
       });
   } else {
