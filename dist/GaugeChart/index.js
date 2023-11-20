@@ -19,6 +19,12 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /*
 GaugeChart creates a gauge chart using D3
 The chart is responsive and will have the same width as the "container"
@@ -37,8 +43,35 @@ var defaultStyle = {
 }; // Props that should cause an animation on update
 
 var animateNeedleProps = ["marginInPercent", "arcPadding", "percent", "nrOfLevels", "animDelay"];
+var defaultProps = {
+  style: defaultStyle,
+  marginInPercent: 0.05,
+  cornerRadius: 6,
+  nrOfLevels: 3,
+  percent: 0.4,
+  arcPadding: 0.05,
+  //The padding between arcs, in rad
+  arcWidth: 0.2,
+  //The width of the arc given in percent of the radius
+  colors: ["#00FF00", "#FF0000"],
+  //Default defined colors
+  textColor: "#fff",
+  needleColor: "#464A4F",
+  needleBaseColor: "#464A4F",
+  hideText: false,
+  animate: true,
+  animDelay: 500,
+  formatTextValue: null,
+  fontSize: null,
+  animateDuration: 3000,
+  textComponent: undefined,
+  needleScale: 0.55
+};
 
-var GaugeChart = function GaugeChart(props) {
+var GaugeChart = function GaugeChart(initialProps) {
+  var props = (0, _react.useMemo)(function () {
+    return _objectSpread(_objectSpread({}, defaultProps), initialProps);
+  }, [initialProps]);
   var svg = (0, _react.useRef)({});
   var g = (0, _react.useRef)({});
   var width = (0, _react.useRef)({});
@@ -113,11 +146,13 @@ var GaugeChart = function GaugeChart(props) {
     window.addEventListener("resize", handleResize);
     return function () {
       window.removeEventListener("resize", handleResize);
-    };
+    }; // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
   var id = props.id,
       style = props.style,
-      className = props.className;
+      className = props.className,
+      textComponent = props.textComponent,
+      textComponentContainerClassName = props.textComponentContainerClassName;
   return /*#__PURE__*/_react.default.createElement("div", {
     id: id,
     className: className,
@@ -125,34 +160,17 @@ var GaugeChart = function GaugeChart(props) {
     ref: function ref(svg) {
       return selectedRef = svg;
     }
-  });
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: textComponentContainerClassName,
+    style: {
+      position: "relative",
+      top: "50%"
+    }
+  }, textComponent));
 };
 
 var _default = GaugeChart;
 exports.default = _default;
-GaugeChart.defaultProps = {
-  style: defaultStyle,
-  marginInPercent: 0.05,
-  cornerRadius: 6,
-  nrOfLevels: 3,
-  percent: 0.4,
-  arcPadding: 0.05,
-  //The padding between arcs, in rad
-  arcWidth: 0.2,
-  //The width of the arc given in percent of the radius
-  colors: ["#00FF00", "#FF0000"],
-  //Default defined colors
-  textColor: "#fff",
-  needleColor: "#464A4F",
-  needleBaseColor: "#464A4F",
-  hideText: false,
-  animate: true,
-  animDelay: 500,
-  formatTextValue: null,
-  fontSize: null,
-  animateDuration: 3000,
-  needleScale: 0.55
-};
 GaugeChart.propTypes = {
   id: _propTypes.default.string,
   className: _propTypes.default.string,
@@ -174,6 +192,8 @@ GaugeChart.propTypes = {
   fontSize: _propTypes.default.string,
   animateDuration: _propTypes.default.number,
   animDelay: _propTypes.default.number,
+  textComponent: _propTypes.default.element,
+  textComponentContainerClassName: _propTypes.default.string,
   needleScale: _propTypes.default.number
 }; // This function update arc's datas when component is mounting or when one of arc's props is updated
 
@@ -250,7 +270,8 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
       needleBaseColor = props.needleBaseColor,
       hideText = props.hideText,
       animate = props.animate,
-      needleScale = props.needleScale;
+      needleScale = props.needleScale,
+      textComponent = props.textComponent;
   var needleRadius = 15 * (width.current / 500),
       // Make the needle radius responsive
   centerPoint = [0, -needleRadius / 2]; //Draw the triangle
@@ -262,7 +283,7 @@ var drawNeedle = function drawNeedle(resize, prevProps, props, width, needle, co
 
   needle.current.append("circle").attr("cx", centerPoint[0]).attr("cy", centerPoint[1]).attr("r", needleRadius).attr("fill", needleBaseColor);
 
-  if (!hideText) {
+  if (!hideText && !textComponent) {
     addText(percent, props, outerRadius, width, g);
   } //Rotate the needle
 
