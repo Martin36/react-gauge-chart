@@ -1,5 +1,3 @@
-
-import { drawNeedle } from "./drawNeedle";
 import { updateDimensions, calculateRadius } from "./utils";
 
 //Renders the chart, should be called every time the window is resized
@@ -47,7 +45,6 @@ export const renderChart = (
     .padAngle(props.arcPadding);
   //Remove the old stuff
   doughnut.current.selectAll(".arc").remove();
-  needle.current.selectAll("*").remove();
   g.current.selectAll(".text-group").remove();
   //Draw the arc
   let arcPaths = doughnut.current
@@ -62,22 +59,6 @@ export const renderChart = (
     .style("fill", function (d) {
       return d.data.color;
     });
-
-  drawNeedle(
-    resize,
-    prevProps,
-    props,
-    width,
-    needle,
-    container,
-    outerRadius,
-    g
-  );
-  //Translate the needle starting point to the middle of the arc
-  needle.current.attr(
-    "transform",
-    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
-  );
 };
 
 

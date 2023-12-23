@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 
 import { setArcData } from "./utils";
 import { renderChart } from "./renderChart";
+import { drawNeedle } from "./drawNeedle";
 
 import useDeepCompareEffect from "./customHooks";
 /*
@@ -106,6 +107,16 @@ const GaugeChart = (initialProps) => {
           container,
           arcData
         );
+        drawNeedle(
+          resize,
+          prevProps,
+          props,
+          width,
+          needle,
+          container,
+          outerRadius,
+          g
+        );
         return;
       }
 
@@ -143,6 +154,17 @@ const GaugeChart = (initialProps) => {
         props,
         container,
         arcData
+      );
+
+      drawNeedle(
+        resize,
+        prevProps,
+        props,
+        width,
+        needle,
+        container,
+        outerRadius,
+        g
       );
     },
     [props]
@@ -199,6 +221,17 @@ const GaugeChart = (initialProps) => {
         props,
         container,
         arcData
+      );
+
+      drawNeedle(
+        resize,
+        prevProps,
+        props,
+        width,
+        needle,
+        container,
+        outerRadius,
+        g
       );
     };
     //Set up resize event listener to re-render the chart everytime the window is resized
