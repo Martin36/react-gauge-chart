@@ -30,6 +30,12 @@ export const drawNeedle = (
   //Remove the old stuff
   needle.current.selectAll("*").remove();
 
+  //Translate the needle starting point to the middle of the arc
+  needle.current.attr(
+    "transform",
+    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
+  );
+
   //Draw the triangle
   //let pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
   const prevPercent = prevProps ? prevProps.percent : 0;
@@ -74,11 +80,5 @@ export const drawNeedle = (
       .select(`.needle path`)
       .attr("d", calculateRotation(percent, outerRadius, width, needleScale));
   }
-
-  //Translate the needle starting point to the middle of the arc
-  needle.current.attr(
-    "transform",
-    "translate(" + outerRadius.current + ", " + outerRadius.current + ")"
-  );
 };
 

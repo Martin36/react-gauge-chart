@@ -63,6 +63,7 @@ const defaultProps = {
   animateDuration: 3000,
   textComponent: undefined,
   needleScale: 0.55,
+  customNeedleComponent: null,
 };
 
 const GaugeChart = (initialProps) => {
@@ -107,7 +108,7 @@ const GaugeChart = (initialProps) => {
           container,
           arcData
         );
-        drawNeedle(
+        !customNeedleComponent && drawNeedle(
           resize,
           prevProps,
           props,
@@ -156,7 +157,7 @@ const GaugeChart = (initialProps) => {
         arcData
       );
 
-      drawNeedle(
+      !customNeedleComponent &&  drawNeedle(
         resize,
         prevProps,
         props,
@@ -223,7 +224,7 @@ const GaugeChart = (initialProps) => {
         arcData
       );
 
-      drawNeedle(
+      !customNeedleComponent &&  drawNeedle(
         resize,
         prevProps,
         props,
@@ -248,6 +249,9 @@ const GaugeChart = (initialProps) => {
     className,
     textComponent,
     textComponentContainerClassName,
+    customNeedleComponent,
+    customNeedleStyle,
+    customNeedleComponentClassName,
   } = props;
 
   return (
@@ -255,14 +259,18 @@ const GaugeChart = (initialProps) => {
       id={id}
       className={className}
       style={style}
-      ref={(svg) => (selectedRef = svg)}
-    >
-      <div
-        className={textComponentContainerClassName}
-        style={{ position: "relative", top: "50%" }}
       >
-        {textComponent}
+      <div ref={(svg) => (selectedRef = svg)}>
+        <div
+          className={textComponentContainerClassName}
+          style={{ position: "relative", top: "50%" }}
+        >
+          {textComponent}
+        </div>
       </div>
+      {customNeedleComponent && <div className={customNeedleComponentClassName} style={{ position: "relative", ...customNeedleStyle }}>
+        {customNeedleComponent}
+      </div>}
     </div>
   );
 };
@@ -293,6 +301,9 @@ GaugeChart.propTypes = {
   textComponent: PropTypes.element,
   textComponentContainerClassName: PropTypes.string,
   needleScale: PropTypes.number,
+  customNeedleComponent: PropTypes.element,
+  customNeedleComponentClassName: PropTypes.string,
+  customNeedleStyle: PropTypes.object
 };
 
 
