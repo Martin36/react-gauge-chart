@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Container, Row, Col } from 'react-bootstrap'
 import './App.css'
 import GaugeChart from './lib' 
+import Icon from './Icon'
 
 const App = () => {
   const [currentPercent, setCurrentPercent] = useState();
@@ -36,13 +37,15 @@ const App = () => {
             <GaugeChart animate={false} style={chartStyle}/>
           </Col>
           <Col xs={12} lg={6}>
-            <h6>GaugeChart with 20 levels</h6>
+            <h6>GaugeChart with 20 levels & custom needle component</h6>
             <GaugeChart
 							style={chartStyle}
 							nrOfLevels={20}
 							percent={0.86}
               needleColor="#345243"
               fontSize="12px"
+              customNeedleComponent={<Icon percent={0.45} height={"10rem"} width={"5rem"} />}
+              customNeedleStyle={{ bottom: "9.25rem", right: "0.5rem" }}
 						/>
           </Col>
         </Row>

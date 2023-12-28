@@ -117,6 +117,13 @@ The props for the chart:
 | animDelay       | PropTypes.number            | Delay in ms before starting the needle animation               | 500                    |
 | animateDuration       | PropTypes.number            | Duration in ms for the needle animation               | 3000                    |
 | formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%')        | null                   |
+| textComponent   | PropTypes.elements          | Custom text label textComponent                                | null                   |
+| textComponentContainerClassName | PropTypes.string | Add `className` to the text component container           |                        |
+| needleScale     | PropTypes.number            | Needle arc cornerRadius                                        | 0.55                   |
+| customNeedleComponent | PropTypes.element     | Custom needle component `Note: Make sure to rotate the needle as per the percentage value` | null |
+| customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
+| customNeedleStyle | PropsTypes.object         | Add `style` to custom needle container div                     |                        |
+|
 
 ##### Colors for the chart
 
