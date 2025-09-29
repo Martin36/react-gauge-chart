@@ -109,6 +109,7 @@ The props for the chart:
 | arcWidth        | PropTypes.number            | The thickness of the arc                                       | 0.2                    |
 | colors          | PropTypes.array             | An array of colors in HEX format displayed in the arc          | ["#00FF00", "#FF0000"] |
 | textColor       | PropTypes.string            | The color of the text                                          | "#FFFFFF"              |
+| fontSize        | PropTypes.string            | The font size of the text                                      | none              |
 | needleColor     | PropTypes.string            | The color of the needle triangle                               | "#464A4F"              |
 | needleBaseColor | PropTypes.string            | The color of the circle at the base of the needle              | "#464A4F"              |
 | hideText        | PropTypes.bool              | Whether or not to hide the percentage display                  | false                  |
