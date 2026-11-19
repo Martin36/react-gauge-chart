@@ -129,12 +129,18 @@ export const drawReferenceLines = (props, doughnut, outerRadius, width) => {
 };
 
 //Adds text undeneath the graft to display which percentage is the current one
-export const addText = (percentage, props, outerRadius, width, g) => {
-  const { formatTextValue, fontSize } = props;
-  let textPadding = 20;
-  const text = formatTextValue
+//Returns the value shown for 'percentage', using formatTextValue if given
+export const formatValue = (percentage, props) => {
+  const { formatTextValue } = props;
+  return formatTextValue
     ? formatTextValue(floatingNumber(percentage))
     : floatingNumber(percentage) + "%";
+};
+
+export const addText = (percentage, props, outerRadius, width, g) => {
+  const { fontSize } = props;
+  let textPadding = 20;
+  const text = formatValue(percentage, props);
   g.current
     .append("g")
     .attr("class", "text-group")

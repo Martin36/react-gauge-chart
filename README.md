@@ -74,10 +74,21 @@ Check the demo below for live examples of the charts
 />
 ```
 
-#### Chart with reference lines
+#### Chart with tooltips
 
 ```jsx
 <GaugeChart id="gauge-chart7"
+  nrOfLevels={3}
+  percent={0.62}
+  arcLabels={["Low", "Medium", "High"]}
+  needleTooltip={(percent) => `Speed: ${Math.round(percent * 120)} km/h`}
+/>
+```
+
+#### Chart with reference lines
+
+```jsx
+<GaugeChart id="gauge-chart8"
   percent={0.32}
   textColor="#333333"
   referenceLines={[
@@ -137,6 +148,8 @@ The props for the chart:
 | customNeedleComponent | PropTypes.element     | Custom needle component `Note: Make sure to rotate the needle as per the percentage value` | null |
 | customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
 | customNeedleStyle | PropsTypes.object         | Add `style` to custom needle container div                     |                        |
+| arcLabels       | PropTypes.array             | Text shown as a tooltip when hovering each arc, in the same order as the arcs (e.g. `["Low", "Medium", "High"]`) | none |
+| needleTooltip   | PropTypes.bool \| PropTypes.func | Show the current value as a tooltip when hovering the needle. `true` uses the same text as the value display (including `formatTextValue`); a function receives the percent (0 to 1) and returns the text | false |
 | referenceLines  | PropTypes.array             | Lines drawn across the arc to mark values such as a target or a baseline. Each item is `{ percent, label, color, width }`, where `percent` is between 0 and 1 and the rest are optional (`color` defaults to `textColor`, `width` to 2). Labels are drawn just outside the arc, so leave some space around the chart | none |
 |
 
