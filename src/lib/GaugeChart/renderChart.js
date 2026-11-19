@@ -1,3 +1,4 @@
+import { select } from "d3";
 import { updateDimensions, calculateRadius } from "./utils";
 
 //Renders the chart, should be called every time the window is resized
@@ -59,6 +60,15 @@ export const renderChart = (
     .style("fill", function (d) {
       return d.data.color;
     });
+  //Show the arc's label as a tooltip on hover
+  if (Array.isArray(props.arcLabels)) {
+    arcPaths.each(function (d, i) {
+      const label = props.arcLabels[i];
+      if (label !== undefined && label !== null && label !== "") {
+        select(this).append("title").text(label);
+      }
+    });
+  }
 };
 
 
