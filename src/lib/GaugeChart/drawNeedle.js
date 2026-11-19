@@ -2,7 +2,7 @@ import {
   easeElastic,
   interpolateNumber,
 } from "d3";
-import { calculateRotation, addText } from "./utils"
+import { calculateRotation, addText, formatValue } from "./utils"
 
 //If 'resize' is true then the animation does not play
 export const drawNeedle = (
@@ -53,6 +53,16 @@ export const drawNeedle = (
     .attr("cy", centerPoint[1])
     .attr("r", needleRadius)
     .attr("fill", needleBaseColor);
+  //Show the value as a tooltip when hovering the needle
+  if (props.needleTooltip) {
+    needle.current
+      .append("title")
+      .text(
+        typeof props.needleTooltip === "function"
+          ? props.needleTooltip(percent)
+          : formatValue(percent, props)
+      );
+  }
   if (!hideText && !textComponent) {
     addText(percent, props, outerRadius, width, g);
   }
