@@ -74,6 +74,19 @@ Check the demo below for live examples of the charts
 />
 ```
 
+#### Chart with reference lines
+
+```jsx
+<GaugeChart id="gauge-chart7"
+  percent={0.32}
+  textColor="#333333"
+  referenceLines={[
+    { percent: 0.25, label: "Target: 25" },
+    { percent: 0.35, label: "Base: 35", color: "#999999" },
+  ]}
+/>
+```
+
 # Demo
 https://martin36.github.io/react-gauge-chart/
 
@@ -124,6 +137,7 @@ The props for the chart:
 | customNeedleComponent | PropTypes.element     | Custom needle component `Note: Make sure to rotate the needle as per the percentage value` | null |
 | customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
 | customNeedleStyle | PropsTypes.object         | Add `style` to custom needle container div                     |                        |
+| referenceLines  | PropTypes.array             | Lines drawn across the arc to mark values such as a target or a baseline. Each item is `{ percent, label, color, width }`, where `percent` is between 0 and 1 and the rest are optional (`color` defaults to `textColor`, `width` to 2). Labels are drawn just outside the arc, so leave some space around the chart | none |
 |
 
 ##### Colors for the chart

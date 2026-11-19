@@ -72,6 +72,62 @@ export const calculateRotation = (percent, outerRadius, width, needleScale) => {
   return pathStr;
 };
 
+//Draws reference lines (e.g. a target or a baseline) across the arc,
+//each with an optional label just outside the arc
+export const drawReferenceLines = (props, doughnut, outerRadius, width) => {
+  const { referenceLines, arcWidth } = props;
+  doughnut.current.selectAll(".reference-line").remove();
+  const svgElement = doughnut.current.node() && doughnut.current.node().ownerSVGElement;
+  if (!Array.isArray(referenceLines) || referenceLines.length === 0) {
+    if (svgElement) svgElement.style.overflow = "";
+    return;
+  }
+  // Labels sit just outside the arc; let them draw past the svg edge instead of being cut off
+  if (svgElement) svgElement.style.overflow = "visible";
+
+  const outer = outerRadius.current;
+  const inner = outer * (1 - arcWidth);
+  const overshoot = outer * 0.04;
+  const labelGap = outer * 0.06;
+  const fontSize = `${Math.max(10, width.current / 35)}px`;
+
+  referenceLines.forEach((line) => {
+    if (!line || typeof line.percent !== "number" || Number.isNaN(line.percent)) return;
+    const percent = Math.min(Math.max(line.percent, 0), 1);
+    const theta = percentToRad(percent);
+    // Same convention as the needle: 0 is the left end of the arc, 1 the right end
+    const dx = -Math.cos(theta);
+    const dy = -Math.sin(theta);
+    const color = line.color || props.textColor;
+    const group = doughnut.current.append("g").attr("class", "reference-line");
+
+    group
+      .append("line")
+      .attr("x1", dx * (inner - overshoot))
+      .attr("y1", dy * (inner - overshoot))
+      .attr("x2", dx * (outer + overshoot))
+      .attr("y2", dy * (outer + overshoot))
+      .style("stroke", color)
+      .style("stroke-width", line.width || 2);
+
+    if (line.label !== undefined && line.label !== null && line.label !== "") {
+      const labelRadius = outer + overshoot + labelGap;
+      group
+        .append("text")
+        .text(line.label)
+        .attr("x", dx * labelRadius)
+        .attr("y", dy * labelRadius)
+        .style("font-size", fontSize)
+        .style("fill", color)
+        .style(
+          "text-anchor",
+          percent < 0.45 ? "end" : percent > 0.55 ? "start" : "middle"
+        )
+        .style("dominant-baseline", percent > 0.2 && percent < 0.8 ? "auto" : "middle");
+    }
+  });
+};
+
 //Adds text undeneath the graft to display which percentage is the current one
 export const addText = (percentage, props, outerRadius, width, g) => {
   const { formatTextValue, fontSize } = props;

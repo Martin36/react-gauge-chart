@@ -200,6 +200,7 @@ const GaugeChart = (initialProps) => {
     props.percent,
     props.needleColor,
     props.needleBaseColor,
+    props.referenceLines,
   ]);
 
   useEffect(() => {
@@ -303,7 +304,15 @@ GaugeChart.propTypes = {
   needleScale: PropTypes.number,
   customNeedleComponent: PropTypes.element,
   customNeedleComponentClassName: PropTypes.string,
-  customNeedleStyle: PropTypes.object
+  customNeedleStyle: PropTypes.object,
+  referenceLines: PropTypes.arrayOf(
+    PropTypes.shape({
+      percent: PropTypes.number.isRequired,
+      label: PropTypes.node,
+      color: PropTypes.string,
+      width: PropTypes.number,
+    })
+  ),
 };
 
 

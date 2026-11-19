@@ -1,4 +1,4 @@
-import { updateDimensions, calculateRadius } from "./utils";
+import { updateDimensions, calculateRadius, drawReferenceLines } from "./utils";
 
 //Renders the chart, should be called every time the window is resized
 export const renderChart = (
@@ -59,6 +59,7 @@ export const renderChart = (
     .style("fill", function (d) {
       return d.data.color;
     });
+  drawReferenceLines(props, doughnut, outerRadius, width);
 };
 
 
