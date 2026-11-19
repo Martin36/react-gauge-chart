@@ -1,5 +1,5 @@
 import { select } from "d3";
-import { updateDimensions, calculateRadius } from "./utils";
+import { updateDimensions, calculateRadius, drawReferenceLines } from "./utils";
 
 //Renders the chart, should be called every time the window is resized
 export const renderChart = (
@@ -69,6 +69,7 @@ export const renderChart = (
       }
     });
   }
+  drawReferenceLines(props, doughnut, outerRadius, width);
 };
 
 
