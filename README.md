@@ -145,6 +145,7 @@ The props for the chart:
 | textComponent   | PropTypes.elements          | Custom text label textComponent                                | null                   |
 | textComponentContainerClassName | PropTypes.string | Add `className` to the text component container           |                        |
 | needleScale     | PropTypes.number            | Needle arc cornerRadius                                        | 0.55                   |
+| clampNeedle     | PropTypes.bool              | Stop the needle at the ends of the arc when `percent` is below 0 or above 1. The text still shows the value as given | false |
 | customNeedleComponent | PropTypes.element     | Custom needle component `Note: Make sure to rotate the needle as per the percentage value` | null |
 | customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
 | customNeedleStyle | PropsTypes.object         | Add `style` to custom needle container div                     |                        |
