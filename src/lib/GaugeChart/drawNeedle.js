@@ -38,9 +38,13 @@ export const drawNeedle = (
 
   //Draw the triangle
   //let pathStr = `M ${leftPoint[0]} ${leftPoint[1]} L ${topPoint[0]} ${topPoint[1]} L ${rightPoint[0]} ${rightPoint[1]}`;
+  // With clampNeedle the needle stops at the ends of the arc for values
+  // below 0 or above 1 (#41); the text still shows the value as given
+  const toNeedle = (value) =>
+    props.clampNeedle ? Math.min(1, Math.max(0, value)) : value;
   const prevPercent = prevProps ? prevProps.percent : 0;
   let pathStr = calculateRotation(
-    prevPercent || percent,
+    toNeedle(prevPercent || percent),
     outerRadius,
     width,
     needleScale
@@ -74,7 +78,10 @@ export const drawNeedle = (
       .ease(easeElastic)
       .duration(props.animateDuration)
       .tween("progress", function () {
-        const currentPercent = interpolateNumber(prevPercent, percent);
+        const currentPercent = interpolateNumber(
+          toNeedle(prevPercent),
+          toNeedle(percent)
+        );
         return function (percentOfPercent) {
           const progress = currentPercent(percentOfPercent);
           return container.current
@@ -88,7 +95,10 @@ export const drawNeedle = (
   } else {
     container.current
       .select(`.needle path`)
-      .attr("d", calculateRotation(percent, outerRadius, width, needleScale));
+      .attr(
+        "d",
+        calculateRotation(toNeedle(percent), outerRadius, width, needleScale)
+      );
   }
 };
 
