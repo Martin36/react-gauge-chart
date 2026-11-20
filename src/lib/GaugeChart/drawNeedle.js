@@ -43,8 +43,25 @@ export const drawNeedle = (
   const toNeedle = (value) =>
     props.clampNeedle ? Math.min(1, Math.max(0, value)) : value;
   const prevPercent = prevProps ? prevProps.percent : 0;
+  const willAnimate = !resize && animate;
+  // Where the needle is drawn now. Before an animation (and during its
+  // animDelay) it waits at its start value, which may be 0 (#112). A redraw
+  // without animation keeps a running animation's current value, so the
+  // needle doesn't jump to the end and back.
+  const state = needleState(container);
+  const keepsAnimation = resize && state && state.animating;
+  if (state && !keepsAnimation) {
+    // A new value: stop any older animation from moving the needle
+    state.token += 1;
+    state.animating = false;
+  }
+  const startValue = willAnimate
+    ? prevPercent
+    : keepsAnimation
+    ? state.value
+    : percent;
   let pathStr = calculateRotation(
-    toNeedle(prevPercent || percent),
+    toNeedle(startValue),
     outerRadius,
     width,
     needleScale
@@ -71,12 +88,22 @@ export const drawNeedle = (
     addText(percent, props, outerRadius, width, g);
   }
   //Rotate the needle
-  if (!resize && animate) {
+  if (willAnimate) {
+    const token = state ? state.token : 0;
+    if (state) {
+      state.animating = true;
+      state.value = prevPercent;
+    }
+    const done = () => {
+      if (state && state.token === token) state.animating = false;
+    };
     needle.current
       .transition()
       .delay(props.animDelay)
       .ease(easeElastic)
       .duration(props.animateDuration)
+      .on("end", done)
+      .on("interrupt", done)
       .tween("progress", function () {
         const currentPercent = interpolateNumber(
           toNeedle(prevPercent),
@@ -84,6 +111,8 @@ export const drawNeedle = (
         );
         return function (percentOfPercent) {
           const progress = currentPercent(percentOfPercent);
+          if (state && state.token !== token) return;
+          if (state) state.value = progress;
           return container.current
             .select(`.needle path`)
             .attr(
@@ -97,8 +126,19 @@ export const drawNeedle = (
       .select(`.needle path`)
       .attr(
         "d",
-        calculateRotation(toNeedle(percent), outerRadius, width, needleScale)
+        calculateRotation(toNeedle(startValue), outerRadius, width, needleScale)
       );
   }
+};
+
+// Animation state of a gauge's needle, kept on its container element so it
+// survives the svg being rebuilt
+const needleState = (container) => {
+  const node = container.current && container.current.node && container.current.node();
+  if (!node) return null;
+  if (!node.__gaugeNeedle) {
+    node.__gaugeNeedle = { animating: false, value: 0, token: 0 };
+  }
+  return node.__gaugeNeedle;
 };
 
