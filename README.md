@@ -150,6 +150,7 @@ The props for the chart:
 | customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
 | customNeedleStyle | PropsTypes.object         | Add `style` to custom needle container div                     |                        |
 | arcLabels       | PropTypes.array             | Text shown as a tooltip when hovering each arc, in the same order as the arcs (e.g. `["Low", "Medium", "High"]`) | none |
+| showArcLabels   | PropTypes.bool              | Also write each of `arcLabels` on its arc, in `textColor`. Style them with the `.arc-label` class (e.g. `font-size`, `fill`) | false |
 | needleTooltip   | PropTypes.bool \| PropTypes.func | Show the current value as a tooltip when hovering the needle. `true` uses the same text as the value display (including `formatTextValue`); a function receives the percent (0 to 1) and returns the text | false |
 | referenceLines  | PropTypes.array             | Lines drawn across the arc to mark values such as a target or a baseline. Each item is `{ percent, label, color, width }`, where `percent` is between 0 and 1 and the rest are optional (`color` defaults to `textColor`, `width` to 2). Labels are drawn just outside the arc, so leave some space around the chart | none |
 |

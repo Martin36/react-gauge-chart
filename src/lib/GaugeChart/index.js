@@ -64,6 +64,7 @@ const defaultProps = {
   animateDuration: 3000,
   textComponent: undefined,
   needleScale: 0.55,
+  showArcLabels: false,
   customNeedleComponent: null,
 };
 
@@ -358,6 +359,7 @@ GaugeChart.propTypes = {
   customNeedleComponent: PropTypes.element,
   customNeedleComponentClassName: PropTypes.string,
   customNeedleStyle: PropTypes.object,
+  showArcLabels: PropTypes.bool,
   arcLabels: PropTypes.arrayOf(PropTypes.string),
   needleTooltip: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
   referenceLines: PropTypes.arrayOf(

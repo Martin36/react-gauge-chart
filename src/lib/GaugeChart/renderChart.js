@@ -74,6 +74,27 @@ export const renderChart = (
       }
     });
   }
+  //With showArcLabels, also write each arc's label on the arc itself (#43).
+  //font-size and fill are attributes, so a .arc-label CSS rule can override them
+  if (props.showArcLabels && Array.isArray(props.arcLabels)) {
+    const fontSize = Math.max(8, outerRadius.current * props.arcWidth * 0.35);
+    arcPaths.each(function (d, i) {
+      const label = props.arcLabels[i];
+      if (label === undefined || label === null || label === "") return;
+      const [x, y] = arcChart.current.centroid(d);
+      select(this)
+        .append("text")
+        .attr("class", "arc-label")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("font-size", `${fontSize}px`)
+        .attr("fill", props.textColor)
+        .style("pointer-events", "none")
+        .text(label);
+    });
+  }
   drawReferenceLines(props, doughnut, outerRadius, width);
 };
 
