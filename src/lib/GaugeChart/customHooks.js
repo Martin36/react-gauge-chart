@@ -20,9 +20,11 @@ const isDeepEquals = (a, b) => {
   return false;
 };
 
+// Returns the same array as long as the dependencies are deeply equal to the
+// previous ones, so the effect below only runs when one of them changes
 const useDeepCompareMemo = (dependencies) => {
   const ref = useRef(null);
-  if (isDeepEquals(dependencies, ref.current)) {
+  if (!isDeepEquals(dependencies, ref.current)) {
     ref.current = dependencies;
   }
   return ref.current;
@@ -31,7 +33,10 @@ const useDeepCompareMemo = (dependencies) => {
 // this function compares deeply new dependencies with old one
 // It works like useEffect but compares the dependencies deeply
 const useDeepCompareEffect = (callback, dependencies) => {
-  useEffect(callback, [useDeepCompareMemo(dependencies), callback]);
+  // The callback is usually a new function on every render, so it is left out
+  // of the dependencies: only a deep change in `dependencies` runs the effect
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(callback, useDeepCompareMemo(dependencies));
 };
 
 export default useDeepCompareEffect;

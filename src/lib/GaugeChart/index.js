@@ -12,7 +12,7 @@ import {
 } from "d3";
 import PropTypes from "prop-types";
 
-import { setArcData } from "./utils";
+import { setArcData, formatValue } from "./utils";
 import { renderChart } from "./renderChart";
 import { drawNeedle } from "./drawNeedle";
 
@@ -171,13 +171,38 @@ const GaugeChart = (initialProps) => {
     [props]
   );
 
+  // What a re-render used to do: rebuild the svg, then draw the update on it.
+  // The rebuild no longer animates, so the needle keeps going from where it
+  // was instead of restarting from 0 (#81).
+  const redraw = (resize) => {
+    initChart(false, true, prevProps.current);
+    initChart(true, resize, prevProps.current);
+  };
+
+  // Create the chart once, on mount. Later prop changes redraw it through the
+  // effect below, so a parent re-render no longer rebuilds the chart and
+  // restarts the needle from 0 (#81, #112).
   useLayoutEffect(() => {
     setArcData(props, nbArcsToDisplay, colorArray, arcData);
     container.current = select(selectedRef);
     //Initialize chart
     initChart();
-  }, [props, initChart]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  const lastWidth = useRef(null);
+  // Every prop that changes the drawing. Functions (often inline, so new on
+  // every render) and React elements (rendered by React itself) are left out;
+  // the effect after this one keeps the texts of the functions up to date.
+  const drawingProps = {};
+  Object.keys(props).forEach((key) => {
+    const value = props[key];
+    if (typeof value === "function") {
+      if (key === "needleTooltip") drawingProps[key] = true;
+    } else if (!React.isValidElement(value)) {
+      drawingProps[key] = value;
+    }
+  });
   useDeepCompareEffect(() => {
     if (
       props.nrOfLevels ||
@@ -191,19 +216,43 @@ const GaugeChart = (initialProps) => {
     const resize = !animateNeedleProps.some(
       (key) => prevProps.current[key] !== props[key]
     );
-    initChart(true, resize, prevProps.current);
+    redraw(resize);
     prevProps.current = props;
-  }, [
-    props.nrOfLevels,
-    props.arcsLength,
-    props.colors,
-    props.percent,
-    props.needleColor,
-    props.needleBaseColor,
-    props.arcLabels,
-    props.needleTooltip,
-    props.referenceLines,
-  ]);
+  }, [drawingProps]);
+
+  // Function props (formatTextValue, needleTooltip) are often written inline,
+  // so they are new on every render. Redrawing for them would interrupt the
+  // needle animation, so only the texts they produce are refreshed.
+  useEffect(() => {
+    if (!container.current || !container.current.select) return;
+    // A re-render used to rebuild the chart, which also picked up a new
+    // container width (e.g. a resized parent). Keep that: redraw without
+    // animation when the width has changed since the last draw.
+    const node = container.current.node && container.current.node();
+    if (node && node.getBoundingClientRect) {
+      const divWidth = node.getBoundingClientRect().width;
+      if (lastWidth.current !== null && Math.abs(divWidth - lastWidth.current) > 0.5) {
+        lastWidth.current = divWidth;
+        redraw(true);
+        return;
+      }
+      lastWidth.current = divWidth;
+    }
+    if (!props.hideText && !props.textComponent) {
+      const text = formatValue(props.percent, props);
+      const textNode = container.current.select(".text-group text");
+      // The text is sized to fit, so a different text needs a redraw
+      if (!textNode.empty() && textNode.text() !== String(text)) {
+        redraw(true);
+        return;
+      }
+    }
+    if (typeof props.needleTooltip === "function") {
+      const title = container.current.select(".needle title");
+      const tooltip = props.needleTooltip(props.percent);
+      if (!title.empty() && title.text() !== String(tooltip)) title.text(tooltip);
+    }
+  });
 
   useEffect(() => {
     const handleResize = () => {
