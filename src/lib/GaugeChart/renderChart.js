@@ -19,6 +19,11 @@ export const renderChart = (
   container,
   arcData
 ) => {
+  // Without a DOM element to draw in (e.g. react-test-renderer or an
+  // unmounted chart) there is nothing to measure or draw (#85)
+  if (!container.current || !container.current.node || !container.current.node()) {
+    return;
+  }
   updateDimensions(props, container, margin, width, height);
   //Set dimensions of svg element and translations
   svg.current
