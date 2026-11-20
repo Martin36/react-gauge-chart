@@ -129,11 +129,13 @@ export const drawReferenceLines = (props, doughnut, outerRadius, width) => {
 };
 
 //Adds text undeneath the graft to display which percentage is the current one
-//Returns the value shown for 'percentage', using formatTextValue if given
+//Returns the value shown for 'percentage', using formatTextValue if given.
+//formatTextValue gets the value as a percentage rounded to 2 decimals, and
+//the unrounded percent (0 to 1, as passed in) for its own rounding (#89)
 export const formatValue = (percentage, props) => {
   const { formatTextValue } = props;
   return formatTextValue
-    ? formatTextValue(floatingNumber(percentage))
+    ? formatTextValue(floatingNumber(percentage), percentage)
     : floatingNumber(percentage) + "%";
 };
 

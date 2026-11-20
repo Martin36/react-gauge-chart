@@ -141,7 +141,7 @@ The props for the chart:
 | animate         | PropTypes.bool              | Whether or not to animate the needle when loaded               | true                   |
 | animDelay       | PropTypes.number            | Delay in ms before starting the needle animation               | 500                    |
 | animateDuration       | PropTypes.number            | Duration in ms for the needle animation               | 3000                    |
-| formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%')        | null                   |
+| formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%'). Receives the value as a percentage rounded to 2 decimals, and as a second argument the unrounded percent (0 to 1) as passed in (example: (value, percent) => (percent * 120).toFixed(1) + ' km/h') | null                   |
 | textComponent   | PropTypes.elements          | Custom text label textComponent                                | null                   |
 | textComponentContainerClassName | PropTypes.string | Add `className` to the text component container           |                        |
 | needleScale     | PropTypes.number            | Needle arc cornerRadius                                        | 0.55                   |
