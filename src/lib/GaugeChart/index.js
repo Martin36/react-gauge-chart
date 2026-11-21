@@ -256,39 +256,32 @@ const GaugeChart = (initialProps) => {
     }
   });
 
+  // The latest window-resize handler, for the ResizeObserver below
+  const handleResizeRef = useRef(null);
+
   useEffect(() => {
+    // Redraw the same way as a mount or a props update, on a fresh svg, so a
+    // resized chart has the same size as one first drawn at that width. The
+    // old in-place resize measured the container while it still held the
+    // previous svg, so the chart came out smaller after shrinking (larger
+    // after growing) and jumped back on the next props update (#27).
     const handleResize = () => {
-      let resize = true;
-
-      renderChart(
-        resize,
-        prevProps,
-        width,
-        margin,
-        height,
-        outerRadius,
-        g,
-        doughnut,
-        arcChart,
-        needle,
-        pieChart,
-        svg,
-        props,
-        container,
-        arcData
-      );
-
-      !customNeedleComponent &&  drawNeedle(
-        resize,
-        prevProps,
-        props,
-        width,
-        needle,
-        container,
-        outerRadius,
-        g
-      );
+      const node =
+        container.current && container.current.node && container.current.node();
+      if (!node) return;
+      const divWidth = node.getBoundingClientRect().width;
+      // A hidden container (display: none, a closed tab) measures 0 wide:
+      // keep the current drawing and redraw once it is visible again
+      if (divWidth <= 0) return;
+      // Nothing to do when the width is unchanged (e.g. only the height of the
+      // window changed, or the chart's own height changed)
+      const svgNode = container.current.select("svg").node();
+      const drawnWidth = svgNode ? parseFloat(svgNode.getAttribute("width")) : NaN;
+      if (Math.abs(divWidth - drawnWidth) <= 0.5) return;
+      lastWidth.current = divWidth;
+      redraw(true);
     };
+    handleResizeRef.current = handleResize;
     //Set up resize event listener to re-render the chart everytime the window is resized
     window.addEventListener("resize", handleResize);
     return () => {
@@ -296,6 +289,31 @@ const GaugeChart = (initialProps) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props]);
+
+  // Also follow the container's own width, not only the window's (#27).
+  // A parent that changes width without a window resize (a sidebar, a tab,
+  // a grid column, a scrollbar appearing) used to leave the chart at its old
+  // size until the next props update, which then resized every chart at once.
+  useEffect(() => {
+    const node =
+      container.current && container.current.node && container.current.node();
+    if (!node || typeof ResizeObserver === "undefined") return undefined;
+    let frame = null;
+    const check = () => {
+      frame = null;
+      if (handleResizeRef.current) handleResizeRef.current();
+    };
+    const observer = new ResizeObserver(() => {
+      // Wait a frame: avoids "ResizeObserver loop" warnings and merges bursts
+      if (frame === null) frame = requestAnimationFrame(check);
+    });
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      if (frame !== null) cancelAnimationFrame(frame);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const {
     id,
