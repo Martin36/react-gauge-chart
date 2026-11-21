@@ -144,7 +144,7 @@ The props for the chart:
 | formatTextValue | PropTypes.func              | Format you own text value (example: value => value+'%'). Receives the value as a percentage rounded to 2 decimals, and as a second argument the unrounded percent (0 to 1) as passed in (example: (value, percent) => (percent * 120).toFixed(1) + ' km/h') | null                   |
 | textComponent   | PropTypes.elements          | Custom text label textComponent                                | null                   |
 | textComponentContainerClassName | PropTypes.string | Add `className` to the text component container           |                        |
-| needleScale     | PropTypes.number            | Needle arc cornerRadius                                        | 0.55                   |
+| needleScale     | PropTypes.number            | Length of the needle as a share of the arc's outer radius. Raise it to bring the tip closer to the arc; `1 - arcWidth` (0.8 with the default `arcWidth`) makes it reach the inner edge of the arc | 0.55                   |
 | clampNeedle     | PropTypes.bool              | Stop the needle at the ends of the arc when `percent` is below 0 or above 1. The text still shows the value as given | false |
 | customNeedleComponent | PropTypes.element     | Custom needle component `Note: Make sure to rotate the needle as per the percentage value` | null |
 | customNeedleComponentClassName | PropTypes.string | Add `className` to the custom needle container             |                        |
