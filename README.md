@@ -98,6 +98,44 @@ Check the demo below for live examples of the charts
 />
 ```
 
+#### Chart with arc labels written on the arcs
+
+```jsx
+<GaugeChart id="gauge-chart9"
+  nrOfLevels={3}
+  percent={0.62}
+  arcLabels={["Low", "Medium", "High"]}
+  showArcLabels
+/>
+```
+
+#### Chart with the needle kept inside the arc
+
+```jsx
+<GaugeChart id="gauge-chart10"
+  percent={1.25}
+  clampNeedle
+/>
+```
+
+#### Chart with a custom value text
+
+```jsx
+<GaugeChart id="gauge-chart11"
+  percent={0.4567}
+  formatTextValue={(value, percent) => `${(percent * 120).toFixed(1)} km/h`}
+/>
+```
+
+#### Chart with a longer needle
+
+```jsx
+<GaugeChart id="gauge-chart12"
+  percent={0.7}
+  needleScale={0.8}
+/>
+```
+
 # Demo
 https://martin36.github.io/react-gauge-chart/
 
