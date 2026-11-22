@@ -156,6 +156,8 @@ const chartStyle = {
 
 ```
 
+Fixed in 0.6.0: the chart now keeps the same size when its props change or the window is resized, so the fixed height is only needed on older versions.
+
 The props for the chart:
 
 | Name            | PropType                    | Description                                                    | Default value          |
